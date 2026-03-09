@@ -1,57 +1,89 @@
 import type {
-  Region, RoomType, RentalPeriod, MembershipTier,
-  RegionData, User, Property, Booking, Payment,
-  ServiceRequest, ProviderService, AppNotification, MembershipPlan,
-  SurveyVisit, QAThread, ChatMessage
-} from "./types"
+  Region,
+  RoomType,
+  RentalPeriod,
+  MembershipTier,
+  RegionData,
+  User,
+  Property,
+  Booking,
+  Payment,
+  ServiceRequest,
+  ProviderService,
+  AppNotification,
+  MembershipPlan,
+  SurveyVisit,
+  QAThread,
+  ChatMessage,
+} from "./types";
 
-export const ADMIN_FEE_PERCENTAGE = 5
+export const ADMIN_FEE_PERCENTAGE = 5;
 
 export const regions: RegionData[] = [
   {
     id: "kota-cirebon",
     name: "Kota Cirebon",
-    description: "Kota udang dengan budaya yang kaya, pusat bisnis dan pendidikan di pesisir utara Jawa.",
+    description:
+      "Kota udang dengan budaya yang kaya, pusat bisnis dan pendidikan di pesisir utara Jawa.",
     gradient: "from-orange-500 to-red-500",
     propertyCount: 3,
   },
   {
     id: "kab-cirebon",
     name: "Kabupaten Cirebon",
-    description: "Kabupaten luas dengan potensi industri dan pertanian, serta akses strategis ke jalur pantura.",
+    description:
+      "Kabupaten luas dengan potensi industri dan pertanian, serta akses strategis ke jalur pantura.",
     gradient: "from-amber-500 to-orange-600",
     propertyCount: 2,
   },
   {
     id: "kuningan",
     name: "Kuningan",
-    description: "Kota kecil yang asri di kaki Gunung Ciremai, cocok untuk mahasiswa dan pekerja.",
+    description:
+      "Kota kecil yang asri di kaki Gunung Ciremai, cocok untuk mahasiswa dan pekerja.",
     gradient: "from-emerald-500 to-teal-600",
     propertyCount: 3,
   },
   {
     id: "majalengka",
     name: "Majalengka",
-    description: "Kabupaten yang berkembang pesat dengan bandara baru dan peluang investasi properti.",
+    description:
+      "Kabupaten yang berkembang pesat dengan bandara baru dan peluang investasi properti.",
     gradient: "from-sky-500 to-blue-600",
     propertyCount: 2,
   },
   {
     id: "indramayu",
     name: "Indramayu",
-    description: "Kabupaten pesisir utara dengan sektor perikanan dan pertanian yang kuat.",
+    description:
+      "Kabupaten pesisir utara dengan sektor perikanan dan pertanian yang kuat.",
     gradient: "from-yellow-500 to-amber-600",
     propertyCount: 1,
   },
-]
+];
 
 export const allFacilities = [
-  "WiFi", "AC", "Kipas Angin", "Kamar Mandi Dalam", "Kamar Mandi Luar",
-  "Dapur Bersama", "Dapur Lengkap", "Parkir Motor", "Parkir Mobil",
-  "CCTV", "Penjaga 24 Jam", "Laundry", "TV Kabel", "TV",
-  "Ruang Tamu", "Taman", "Rooftop", "Kolam Renang", "Gym",
+  "WiFi",
+  "AC",
+  "Kipas Angin",
+  "Kamar Mandi Dalam",
+  "Kamar Mandi Luar",
+  "Dapur Bersama",
+  "Dapur Lengkap",
+  "Parkir Motor",
+  "Parkir Mobil",
+  "CCTV",
+  "Penjaga 24 Jam",
+  "Laundry",
+  "TV Kabel",
+  "TV",
+  "Ruang Tamu",
+  "Taman",
+  "Rooftop",
+  "Kolam Renang",
+  "Gym",
   "Antar-Jemput Bandara",
-]
+];
 
 export const users: User[] = [
   {
@@ -150,7 +182,7 @@ export const users: User[] = [
     avatar: "AD",
     createdAt: "2025-01-01",
   },
-]
+];
 
 export const properties: Property[] = [
   {
@@ -158,9 +190,17 @@ export const properties: Property[] = [
     name: "Kos Melati Indah",
     region: "kuningan",
     address: "Jl. Siliwangi No. 45, Kuningan",
-    description: "Kos nyaman di pusat kota Kuningan, dekat dengan kampus dan pusat perbelanjaan. Fasilitas lengkap dengan WiFi cepat dan dapur bersama.",
+    description:
+      "Kos nyaman di pusat kota Kuningan, dekat dengan kampus dan pusat perbelanjaan. Fasilitas lengkap dengan WiFi cepat dan dapur bersama.",
     images: ["/placeholder-kos-1.jpg"],
-    amenities: ["WiFi", "AC", "Kamar Mandi Dalam", "Dapur Bersama", "Parkir Motor", "Laundry"],
+    amenities: [
+      "WiFi",
+      "AC",
+      "Kamar Mandi Dalam",
+      "Dapur Bersama",
+      "Parkir Motor",
+      "Laundry",
+    ],
     pricePerMonth: 1500000,
     pricePerWeek: 500000,
     pricePerYear: 15000000,
@@ -179,9 +219,17 @@ export const properties: Property[] = [
     name: "Kos Putri Anggrek",
     region: "kuningan",
     address: "Jl. Veteran No. 12, Kuningan",
-    description: "Kos khusus putri dengan lingkungan aman dan bersih. Tersedia penjaga 24 jam dan CCTV.",
+    description:
+      "Kos khusus putri dengan lingkungan aman dan bersih. Tersedia penjaga 24 jam dan CCTV.",
     images: ["/placeholder-kos-2.jpg"],
-    amenities: ["WiFi", "AC", "Kamar Mandi Dalam", "CCTV", "Penjaga 24 Jam", "Parkir Motor"],
+    amenities: [
+      "WiFi",
+      "AC",
+      "Kamar Mandi Dalam",
+      "CCTV",
+      "Penjaga 24 Jam",
+      "Parkir Motor",
+    ],
     pricePerMonth: 1200000,
     pricePerWeek: 400000,
     pricePerYear: 12000000,
@@ -200,9 +248,16 @@ export const properties: Property[] = [
     name: "Kos Putra Garuda",
     region: "kuningan",
     address: "Jl. Ahmad Yani No. 78, Kuningan",
-    description: "Kos khusus putra dengan fasilitas olahraga dan ruang komunal yang luas.",
+    description:
+      "Kos khusus putra dengan fasilitas olahraga dan ruang komunal yang luas.",
     images: ["/placeholder-kos-3.jpg"],
-    amenities: ["WiFi", "Kipas Angin", "Kamar Mandi Luar", "Ruang Tamu", "Parkir Motor"],
+    amenities: [
+      "WiFi",
+      "Kipas Angin",
+      "Kamar Mandi Luar",
+      "Ruang Tamu",
+      "Parkir Motor",
+    ],
     pricePerMonth: 800000,
     pricePerWeek: 250000,
     pricePerYear: 8000000,
@@ -221,9 +276,17 @@ export const properties: Property[] = [
     name: "Kos Harmoni",
     region: "kab-cirebon",
     address: "Jl. Merdeka No. 33, Sumber, Kab. Cirebon",
-    description: "Kos modern minimalis dengan desain interior yang stylish, cocok untuk profesional muda.",
+    description:
+      "Kos modern minimalis dengan desain interior yang stylish, cocok untuk profesional muda.",
     images: ["/placeholder-kos-4.jpg"],
-    amenities: ["WiFi", "AC", "Kamar Mandi Dalam", "TV Kabel", "Dapur Lengkap", "Parkir Mobil"],
+    amenities: [
+      "WiFi",
+      "AC",
+      "Kamar Mandi Dalam",
+      "TV Kabel",
+      "Dapur Lengkap",
+      "Parkir Mobil",
+    ],
     pricePerMonth: 2000000,
     pricePerWeek: 650000,
     pricePerYear: 20000000,
@@ -242,9 +305,17 @@ export const properties: Property[] = [
     name: "Kos Cirebon Sejahtera",
     region: "kota-cirebon",
     address: "Jl. Kartini No. 56, Kota Cirebon",
-    description: "Kos strategis di pusat Kota Cirebon, dekat stasiun kereta dan alun-alun. Cocok untuk mahasiswa dan pekerja.",
+    description:
+      "Kos strategis di pusat Kota Cirebon, dekat stasiun kereta dan alun-alun. Cocok untuk mahasiswa dan pekerja.",
     images: ["/placeholder-kos-5.jpg"],
-    amenities: ["WiFi", "AC", "Kamar Mandi Dalam", "Dapur Bersama", "Parkir Motor", "Rooftop"],
+    amenities: [
+      "WiFi",
+      "AC",
+      "Kamar Mandi Dalam",
+      "Dapur Bersama",
+      "Parkir Motor",
+      "Rooftop",
+    ],
     pricePerMonth: 1300000,
     pricePerWeek: 430000,
     pricePerYear: 13000000,
@@ -265,7 +336,14 @@ export const properties: Property[] = [
     address: "Jl. Pilsauddin No. 21, Kota Cirebon",
     description: "Kos putri elegan dengan taman yang indah dan suasana tenang.",
     images: ["/placeholder-kos-6.jpg"],
-    amenities: ["WiFi", "AC", "Kamar Mandi Dalam", "Taman", "Laundry", "Dapur Lengkap"],
+    amenities: [
+      "WiFi",
+      "AC",
+      "Kamar Mandi Dalam",
+      "Taman",
+      "Laundry",
+      "Dapur Lengkap",
+    ],
     pricePerMonth: 1100000,
     pricePerWeek: 370000,
     pricePerYear: 11000000,
@@ -284,9 +362,18 @@ export const properties: Property[] = [
     name: "Kos Ciremai View",
     region: "kota-cirebon",
     address: "Jl. Tuparev No. 88, Kota Cirebon",
-    description: "Kos premium dengan pemandangan Gunung Ciremai. Fasilitas hotel bintang 3.",
+    description:
+      "Kos premium dengan pemandangan Gunung Ciremai. Fasilitas hotel bintang 3.",
     images: ["/placeholder-kos-7.jpg"],
-    amenities: ["WiFi", "AC", "Kamar Mandi Dalam", "Kolam Renang", "Gym", "Parkir Mobil", "Laundry"],
+    amenities: [
+      "WiFi",
+      "AC",
+      "Kamar Mandi Dalam",
+      "Kolam Renang",
+      "Gym",
+      "Parkir Mobil",
+      "Laundry",
+    ],
     pricePerMonth: 2500000,
     pricePerWeek: 800000,
     pricePerYear: 25000000,
@@ -305,7 +392,8 @@ export const properties: Property[] = [
     name: "Kos Sederhana Majalengka",
     region: "majalengka",
     address: "Jl. Raya Tonjong No. 15, Majalengka",
-    description: "Kos murah dan bersih di Majalengka, ideal untuk pekerja pabrik dan mahasiswa.",
+    description:
+      "Kos murah dan bersih di Majalengka, ideal untuk pekerja pabrik dan mahasiswa.",
     images: ["/placeholder-kos-8.jpg"],
     amenities: ["WiFi", "Kipas Angin", "Kamar Mandi Luar", "Parkir Motor"],
     pricePerMonth: 600000,
@@ -326,9 +414,17 @@ export const properties: Property[] = [
     name: "Kos Airport Residence",
     region: "majalengka",
     address: "Jl. Bandara BIJB No. 5, Majalengka",
-    description: "Kos modern dekat Bandara Kertajati, cocok untuk pekerja bandara dan wisatawan transit.",
+    description:
+      "Kos modern dekat Bandara Kertajati, cocok untuk pekerja bandara dan wisatawan transit.",
     images: ["/placeholder-kos-9.jpg"],
-    amenities: ["WiFi", "AC", "Kamar Mandi Dalam", "TV", "Parkir Mobil", "Antar-Jemput Bandara"],
+    amenities: [
+      "WiFi",
+      "AC",
+      "Kamar Mandi Dalam",
+      "TV",
+      "Parkir Mobil",
+      "Antar-Jemput Bandara",
+    ],
     pricePerMonth: 1800000,
     pricePerWeek: 600000,
     pricePerYear: 18000000,
@@ -347,9 +443,17 @@ export const properties: Property[] = [
     name: "Kos Keluarga Bahagia",
     region: "kab-cirebon",
     address: "Jl. Siti Armilah No. 30, Plered, Kab. Cirebon",
-    description: "Kos keluarga dengan suasana homey dan dapur lengkap. Dekat pasar tradisional.",
+    description:
+      "Kos keluarga dengan suasana homey dan dapur lengkap. Dekat pasar tradisional.",
     images: ["/placeholder-kos-10.jpg"],
-    amenities: ["WiFi", "Kipas Angin", "Kamar Mandi Dalam", "Dapur Lengkap", "Taman", "Parkir Motor"],
+    amenities: [
+      "WiFi",
+      "Kipas Angin",
+      "Kamar Mandi Dalam",
+      "Dapur Lengkap",
+      "Taman",
+      "Parkir Motor",
+    ],
     pricePerMonth: 900000,
     pricePerWeek: 300000,
     pricePerYear: 9000000,
@@ -368,9 +472,16 @@ export const properties: Property[] = [
     name: "Kos Indramayu Permai",
     region: "indramayu",
     address: "Jl. Raya Pabean No. 10, Indramayu",
-    description: "Kos bersih dan terjangkau di pusat Kota Indramayu, dekat kawasan industri dan pelabuhan.",
+    description:
+      "Kos bersih dan terjangkau di pusat Kota Indramayu, dekat kawasan industri dan pelabuhan.",
     images: ["/placeholder-kos-11.jpg"],
-    amenities: ["WiFi", "Kipas Angin", "Kamar Mandi Dalam", "Parkir Motor", "Dapur Bersama"],
+    amenities: [
+      "WiFi",
+      "Kipas Angin",
+      "Kamar Mandi Dalam",
+      "Parkir Motor",
+      "Dapur Bersama",
+    ],
     pricePerMonth: 700000,
     pricePerWeek: 230000,
     pricePerYear: 7000000,
@@ -384,7 +495,7 @@ export const properties: Property[] = [
     featured: false,
     rentalPeriods: ["bulanan", "tahunan"],
   },
-]
+];
 
 export const bookings: Booking[] = [
   {
@@ -429,7 +540,7 @@ export const bookings: Booking[] = [
     duration: 3,
     createdAt: "2026-02-20",
   },
-]
+];
 
 export const payments: Payment[] = [
   {
@@ -500,7 +611,7 @@ export const payments: Payment[] = [
     dueDate: "2026-04-01",
     createdAt: "2026-03-15",
   },
-]
+];
 
 export const serviceRequests: ServiceRequest[] = [
   {
@@ -537,29 +648,164 @@ export const serviceRequests: ServiceRequest[] = [
     price: 75000,
     createdAt: "2026-03-05",
   },
-]
+];
 
 export const providerServices: ProviderService[] = [
-  { id: "ps-1", providerId: "p1", name: "Cuci Kiloan", description: "Laundry cuci kering per kg", price: 7000, serviceType: "laundry", active: true },
-  { id: "ps-2", providerId: "p1", name: "Cuci Setrika", description: "Laundry cuci + setrika per kg", price: 10000, serviceType: "laundry", active: true },
-  { id: "ps-3", providerId: "p1", name: "Express Laundry", description: "Selesai dalam 6 jam", price: 15000, serviceType: "laundry", active: true },
-  { id: "ps-4", providerId: "p2", name: "Bersih Kamar", description: "Bersih-bersih kamar standar", price: 50000, serviceType: "kebersihan", active: true },
-  { id: "ps-5", providerId: "p2", name: "Deep Cleaning", description: "Pembersihan menyeluruh", price: 100000, serviceType: "kebersihan", active: true },
-  { id: "ps-6", providerId: "p3", name: "Perbaikan Ringan", description: "Keran, saklar, engsel, dll", price: 75000, serviceType: "tukang", active: true },
-  { id: "ps-7", providerId: "p3", name: "Perbaikan Berat", description: "Pipa, listrik, konstruksi ringan", price: 150000, serviceType: "tukang", active: true },
-]
+  {
+    id: "ps-1",
+    providerId: "p1",
+    name: "Cuci Kiloan",
+    description: "Laundry cuci kering per kg",
+    price: 7000,
+    serviceType: "laundry",
+    active: true,
+  },
+  {
+    id: "ps-2",
+    providerId: "p1",
+    name: "Cuci Setrika",
+    description: "Laundry cuci + setrika per kg",
+    price: 10000,
+    serviceType: "laundry",
+    active: true,
+  },
+  {
+    id: "ps-3",
+    providerId: "p1",
+    name: "Express Laundry",
+    description: "Selesai dalam 6 jam",
+    price: 15000,
+    serviceType: "laundry",
+    active: true,
+  },
+  {
+    id: "ps-4",
+    providerId: "p2",
+    name: "Bersih Kamar",
+    description: "Bersih-bersih kamar standar",
+    price: 50000,
+    serviceType: "kebersihan",
+    active: true,
+  },
+  {
+    id: "ps-5",
+    providerId: "p2",
+    name: "Deep Cleaning",
+    description: "Pembersihan menyeluruh",
+    price: 100000,
+    serviceType: "kebersihan",
+    active: true,
+  },
+  {
+    id: "ps-6",
+    providerId: "p3",
+    name: "Perbaikan Ringan",
+    description: "Keran, saklar, engsel, dll",
+    price: 75000,
+    serviceType: "tukang",
+    active: true,
+  },
+  {
+    id: "ps-7",
+    providerId: "p3",
+    name: "Perbaikan Berat",
+    description: "Pipa, listrik, konstruksi ringan",
+    price: 150000,
+    serviceType: "tukang",
+    active: true,
+  },
+];
 
 export const notifications: AppNotification[] = [
-  { id: "n-1", userId: "t1", title: "Pembayaran Berhasil", message: "Pembayaran bulan Maret sebesar Rp 1.575.000 telah diterima.", type: "payment", read: true, createdAt: "2026-03-13" },
-  { id: "n-2", userId: "t1", title: "Layanan Selesai", message: "Layanan laundry dari Laundry Bersih Jaya telah selesai.", type: "service", read: true, createdAt: "2026-02-11" },
-  { id: "n-3", userId: "t1", title: "Tagihan Baru", message: "Tagihan bulan April sebesar Rp 1.575.000 telah dibuat. Jatuh tempo: 15 April 2026.", type: "payment", read: false, createdAt: "2026-04-01" },
-  { id: "n-4", userId: "o1", title: "Booking Baru", message: "Siti Aminah ingin memesan Kos Airport Residence. Menunggu persetujuan Anda.", type: "booking", read: false, createdAt: "2026-02-20" },
-  { id: "n-5", userId: "o1", title: "Pembayaran Diterima", message: "Rina Susanti telah membayar sewa bulan Maret untuk Kos Melati Indah.", type: "payment", read: true, createdAt: "2026-03-13" },
-  { id: "n-6", userId: "p3", title: "Pekerjaan Baru", message: "Budi Pratama membutuhkan perbaikan keran di Kos Cirebon Sejahtera.", type: "service", read: false, createdAt: "2026-03-05" },
-  { id: "n-7", userId: "t2", title: "Pembayaran Menunggu", message: "Pembayaran via OVO sedang diproses. Kami akan mengirim konfirmasi secepatnya.", type: "payment", read: false, createdAt: "2026-03-15" },
-  { id: "n-8", userId: "t1", title: "Sewa Akan Jatuh Tempo", message: "Pembayaran sewa bulan depan akan jatuh tempo dalam 7 hari. Segera lakukan pembayaran.", type: "payment", read: false, createdAt: "2026-04-08" },
-  { id: "n-9", userId: "o1", title: "Membership Segera Berakhir", message: "Paket Membership Emas Anda akan berakhir dalam 14 hari. Perpanjang sekarang untuk tetap menikmati fitur premium.", type: "membership", read: false, createdAt: "2026-04-01" },
-]
+  {
+    id: "n-1",
+    userId: "t1",
+    title: "Pembayaran Berhasil",
+    message: "Pembayaran bulan Maret sebesar Rp 1.575.000 telah diterima.",
+    type: "payment",
+    read: true,
+    createdAt: "2026-03-13",
+  },
+  {
+    id: "n-2",
+    userId: "t1",
+    title: "Layanan Selesai",
+    message: "Layanan laundry dari Laundry Bersih Jaya telah selesai.",
+    type: "service",
+    read: true,
+    createdAt: "2026-02-11",
+  },
+  {
+    id: "n-3",
+    userId: "t1",
+    title: "Tagihan Baru",
+    message:
+      "Tagihan bulan April sebesar Rp 1.575.000 telah dibuat. Jatuh tempo: 15 April 2026.",
+    type: "payment",
+    read: false,
+    createdAt: "2026-04-01",
+  },
+  {
+    id: "n-4",
+    userId: "o1",
+    title: "Booking Baru",
+    message:
+      "Siti Aminah ingin memesan Kos Airport Residence. Menunggu persetujuan Anda.",
+    type: "booking",
+    read: false,
+    createdAt: "2026-02-20",
+  },
+  {
+    id: "n-5",
+    userId: "o1",
+    title: "Pembayaran Diterima",
+    message:
+      "Rina Susanti telah membayar sewa bulan Maret untuk Kos Melati Indah.",
+    type: "payment",
+    read: true,
+    createdAt: "2026-03-13",
+  },
+  {
+    id: "n-6",
+    userId: "p3",
+    title: "Pekerjaan Baru",
+    message:
+      "Budi Pratama membutuhkan perbaikan keran di Kos Cirebon Sejahtera.",
+    type: "service",
+    read: false,
+    createdAt: "2026-03-05",
+  },
+  {
+    id: "n-7",
+    userId: "t2",
+    title: "Pembayaran Menunggu",
+    message:
+      "Pembayaran via OVO sedang diproses. Kami akan mengirim konfirmasi secepatnya.",
+    type: "payment",
+    read: false,
+    createdAt: "2026-03-15",
+  },
+  {
+    id: "n-8",
+    userId: "t1",
+    title: "Sewa Akan Jatuh Tempo",
+    message:
+      "Pembayaran sewa bulan depan akan jatuh tempo dalam 7 hari. Segera lakukan pembayaran.",
+    type: "payment",
+    read: false,
+    createdAt: "2026-04-08",
+  },
+  {
+    id: "n-9",
+    userId: "o1",
+    title: "Membership Segera Berakhir",
+    message:
+      "Paket Membership Emas Anda akan berakhir dalam 14 hari. Perpanjang sekarang untuk tetap menikmati fitur premium.",
+    type: "membership",
+    read: false,
+    createdAt: "2026-04-01",
+  },
+];
 
 export const surveyVisits: SurveyVisit[] = [
   {
@@ -583,15 +829,17 @@ export const surveyVisits: SurveyVisit[] = [
     status: "menunggu",
     createdAt: "2026-03-08",
   },
-]
+];
 
 export const qaThreads: QAThread[] = [
   {
     id: "qa-1",
     propertyId: "prop-1",
     tenantId: "t2",
-    question: "Apakah tersedia parkir untuk mobil? Saya membawa kendaraan roda empat.",
-    answer: "Maaf, saat ini kami hanya menyediakan parkir motor. Namun ada lahan parkir umum di sebelah kos yang bisa digunakan.",
+    question:
+      "Apakah tersedia parkir untuk mobil? Saya membawa kendaraan roda empat.",
+    answer:
+      "Maaf, saat ini kami hanya menyediakan parkir motor. Namun ada lahan parkir umum di sebelah kos yang bisa digunakan.",
     answeredAt: "2026-02-16",
     createdAt: "2026-02-15",
   },
@@ -607,7 +855,8 @@ export const qaThreads: QAThread[] = [
     propertyId: "prop-5",
     tenantId: "t1",
     question: "Jam berapa batas tamu berkunjung?",
-    answer: "Tamu diperbolehkan berkunjung hingga pukul 22.00 WIB. Setelah itu, tamu tidak diperkenankan berada di area kos.",
+    answer:
+      "Tamu diperbolehkan berkunjung hingga pukul 22.00 WIB. Setelah itu, tamu tidak diperkenankan berada di area kos.",
     answeredAt: "2026-02-21",
     createdAt: "2026-02-20",
   },
@@ -616,42 +865,47 @@ export const qaThreads: QAThread[] = [
     propertyId: "prop-7",
     tenantId: "t2",
     question: "Apakah kolam renang bisa digunakan setiap hari?",
-    answer: "Ya, kolam renang buka setiap hari dari pukul 06.00 - 20.00 WIB untuk seluruh penghuni.",
+    answer:
+      "Ya, kolam renang buka setiap hari dari pukul 06.00 - 20.00 WIB untuk seluruh penghuni.",
     answeredAt: "2026-03-02",
     createdAt: "2026-03-01",
   },
-]
+];
 
 export const adminChatMessages: ChatMessage[] = [
   {
     id: "cm-1",
     senderId: "t1",
-    message: "Halo admin, saya ingin bertanya tentang proses perpanjangan sewa.",
+    message:
+      "Halo admin, saya ingin bertanya tentang proses perpanjangan sewa.",
     timestamp: "2026-03-10 09:00",
     isAdmin: false,
   },
   {
     id: "cm-2",
     senderId: "a1",
-    message: "Halo Rina! Untuk perpanjangan sewa, Anda bisa langsung mengajukan melalui dashboard penghuni di menu Booking. Pilih opsi perpanjangan dan ikuti langkah-langkahnya.",
+    message:
+      "Halo Rina! Untuk perpanjangan sewa, Anda bisa langsung mengajukan melalui dashboard penghuni di menu Booking. Pilih opsi perpanjangan dan ikuti langkah-langkahnya.",
     timestamp: "2026-03-10 09:05",
     isAdmin: true,
   },
   {
     id: "cm-3",
     senderId: "t1",
-    message: "Baik, terima kasih infonya! Apakah ada biaya tambahan untuk perpanjangan?",
+    message:
+      "Baik, terima kasih infonya! Apakah ada biaya tambahan untuk perpanjangan?",
     timestamp: "2026-03-10 09:10",
     isAdmin: false,
   },
   {
     id: "cm-4",
     senderId: "a1",
-    message: "Tidak ada biaya tambahan. Harga sewa tetap sama sesuai yang tertera di listing. Biaya admin juga tetap 5% dari sewa bulanan.",
+    message:
+      "Tidak ada biaya tambahan. Harga sewa tetap sama sesuai yang tertera di listing. Biaya admin juga tetap 5% dari sewa bulanan.",
     timestamp: "2026-03-10 09:12",
     isAdmin: true,
   },
-]
+];
 
 export const membershipPlans: MembershipPlan[] = [
   {
@@ -696,7 +950,7 @@ export const membershipPlans: MembershipPlan[] = [
     ],
     highlighted: true,
   },
-]
+];
 
 export function formatRupiah(amount: number): string {
   return new Intl.NumberFormat("id-ID", {
@@ -704,34 +958,46 @@ export function formatRupiah(amount: number): string {
     currency: "IDR",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(amount)
+  }).format(amount);
 }
 
 export function getUser(id: string): User | undefined {
-  return users.find((u) => u.id === id)
+  return users.find((u) => u.id === id);
 }
 
 export function getProperty(id: string): Property | undefined {
-  return properties.find((p) => p.id === id)
+  return properties.find((p) => p.id === id);
 }
 
 export function regionLabel(r: Region): string {
-  return regions.find((reg) => reg.id === r)?.name ?? r
+  return regions.find((reg) => reg.id === r)?.name ?? r;
 }
 
 export function roomTypeLabel(t: RoomType): string {
-  const labels: Record<RoomType, string> = { putra: "Putra", putri: "Putri", campur: "Campur" }
-  return labels[t]
+  const labels: Record<RoomType, string> = {
+    putra: "Putra",
+    putri: "Putri",
+    campur: "Campur",
+  };
+  return labels[t];
 }
 
 export function rentalPeriodLabel(p: RentalPeriod): string {
-  const labels: Record<RentalPeriod, string> = { mingguan: "Mingguan", bulanan: "Bulanan", tahunan: "Tahunan" }
-  return labels[p]
+  const labels: Record<RentalPeriod, string> = {
+    mingguan: "Mingguan",
+    bulanan: "Bulanan",
+    tahunan: "Tahunan",
+  };
+  return labels[p];
 }
 
 export function membershipLabel(t: MembershipTier): string {
-  const labels: Record<MembershipTier, string> = { gratis: "Gratis", perak: "Perak", emas: "Emas" }
-  return labels[t]
+  const labels: Record<MembershipTier, string> = {
+    gratis: "Gratis",
+    perak: "Perak",
+    emas: "Emas",
+  };
+  return labels[t];
 }
 
 export function statusLabel(s: string): string {
@@ -745,8 +1011,8 @@ export function statusLabel(s: string): string {
     gagal: "Gagal",
     dikerjakan: "Dikerjakan",
     dikonfirmasi: "Dikonfirmasi",
-  }
-  return labels[s] ?? s
+  };
+  return labels[s] ?? s;
 }
 
-export type Region_ = typeof regions
+export type Region_ = typeof regions;

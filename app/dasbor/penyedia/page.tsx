@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
-import ServicesProviderPageContent from "./ServicesProviderPageContent";
+import ServicesProviderPageContent from "./ProviderDashboard";
 
 export default function Page() {
   return (

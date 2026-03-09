@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
-import OwnerPageContent from "./OwnerPageContent";
+import OwnerPageContent from "./OwnerDashboard";
 
 export default function Page() {
   return (

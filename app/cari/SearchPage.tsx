@@ -20,7 +20,7 @@ import type { Region, RoomType, RentalPeriod } from "@/lib/types";
 import { Search, SlidersHorizontal, X, MapPin, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export default function SearchPageContent() {
+export default function SearchPage() {
   const { state } = useApp();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);

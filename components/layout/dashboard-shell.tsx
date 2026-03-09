@@ -1,104 +1,61 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { useCurrentUser } from "@/lib/app-context";
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { cn } from "@/lib/utils"
+import { useCurrentUser } from "@/lib/app-context"
 import {
-  CalendarDays,
-  CreditCard,
-  Wrench,
-  Bell,
-  Home,
-  Building2,
-  Users,
-  BarChart3,
-  CheckCircle,
-  Briefcase,
-  DollarSign,
-  Settings,
-  ClipboardList,
-  CalendarSearch,
-  Eye,
-  MessageSquare,
-  Crown,
-} from "lucide-react";
-import type { ReactNode } from "react";
+  CalendarDays, CreditCard, Wrench, Bell, Home, Building2, Users, BarChart3, CheckCircle,
+  Briefcase, DollarSign, Settings, ClipboardList, CalendarSearch, Eye, MessageSquare, Crown,
+} from "lucide-react"
+import type { ReactNode } from "react"
 
 interface NavItem {
-  href: string;
-  label: string;
-  icon: React.ElementType;
+  href: string
+  label: string
+  icon: React.ElementType
 }
 
 const tenantNav: NavItem[] = [
   { href: "/dasbor/penghuni", label: "Ringkasan", icon: Home },
-  {
-    href: "/dasbor/penghuni?tab=booking",
-    label: "Booking",
-    icon: CalendarDays,
-  },
-  {
-    href: "/dasbor/penghuni?tab=pembayaran",
-    label: "Pembayaran",
-    icon: CreditCard,
-  },
-  {
-    href: "/dasbor/penghuni?tab=survey",
-    label: "Survey",
-    icon: CalendarSearch,
-  },
+  { href: "/dasbor/penghuni?tab=booking", label: "Booking", icon: CalendarDays },
+  { href: "/dasbor/penghuni?tab=pembayaran", label: "Pembayaran", icon: CreditCard },
+  { href: "/dasbor/penghuni?tab=survey", label: "Survey", icon: CalendarSearch },
   { href: "/dasbor/penghuni?tab=layanan", label: "Layanan", icon: Wrench },
   { href: "/dasbor/penghuni?tab=notifikasi", label: "Notifikasi", icon: Bell },
-];
+]
 
 const ownerNav: NavItem[] = [
   { href: "/dasbor/pemilik", label: "Ringkasan", icon: Home },
   { href: "/dasbor/pemilik?tab=properti", label: "Properti", icon: Building2 },
   { href: "/dasbor/pemilik?tab=penghuni", label: "Penghuni", icon: Users },
   { href: "/dasbor/pemilik?tab=keuangan", label: "Arus Kas", icon: BarChart3 },
-  {
-    href: "/dasbor/pemilik?tab=persetujuan",
-    label: "Persetujuan",
-    icon: CheckCircle,
-  },
+  { href: "/dasbor/pemilik?tab=persetujuan", label: "Persetujuan", icon: CheckCircle },
   { href: "/dasbor/pemilik?tab=survey", label: "Survey", icon: CalendarSearch },
   { href: "/dasbor/pemilik?tab=ulasan", label: "Ulasan", icon: MessageSquare },
   { href: "/dasbor/pemilik?tab=membership", label: "Membership", icon: Crown },
-];
+]
 
 const providerNav: NavItem[] = [
   { href: "/dasbor/penyedia", label: "Ringkasan", icon: Home },
-  {
-    href: "/dasbor/penyedia?tab=pekerjaan",
-    label: "Pekerjaan",
-    icon: Briefcase,
-  },
-  {
-    href: "/dasbor/penyedia?tab=layanan",
-    label: "Layanan",
-    icon: ClipboardList,
-  },
-  {
-    href: "/dasbor/penyedia?tab=pendapatan",
-    label: "Pendapatan",
-    icon: DollarSign,
-  },
-];
+  { href: "/dasbor/penyedia?tab=pekerjaan", label: "Pekerjaan", icon: Briefcase },
+  { href: "/dasbor/penyedia?tab=layanan", label: "Layanan", icon: ClipboardList },
+  { href: "/dasbor/penyedia?tab=pendapatan", label: "Pendapatan", icon: DollarSign },
+]
 
 export function DashboardShell({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
-  const currentUser = useCurrentUser();
+  const pathname = usePathname()
+  const currentUser = useCurrentUser()
 
-  let navItems: NavItem[] = tenantNav;
-  let title = "Dasbor Penghuni";
+  let navItems: NavItem[] = tenantNav
+  let title = "Dasbor Penghuni"
 
   if (currentUser.role === "pemilik") {
-    navItems = ownerNav;
-    title = "Dasbor Pemilik";
+    navItems = ownerNav
+    title = "Dasbor Pemilik"
   } else if (currentUser.role === "penyedia") {
-    navItems = providerNav;
-    title = "Dasbor Penyedia";
+    navItems = providerNav
+    title = "Dasbor Penyedia"
   }
 
   return (
@@ -109,13 +66,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           <h2 className="mb-4 font-semibold text-card-foreground">{title}</h2>
           <nav className="flex flex-col gap-1">
             {navItems.map((item) => {
-              const isActive =
-                pathname +
-                  (typeof window !== "undefined"
-                    ? window.location.search
-                    : "") ===
-                  item.href ||
-                (item.href.includes("?") === false && pathname === item.href);
+              const isActive = pathname + (typeof window !== "undefined" ? window.location.search : "") === item.href ||
+                (item.href.includes("?") === false && pathname === item.href)
               return (
                 <Link
                   key={item.href}
@@ -124,13 +76,13 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                     isActive
                       ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                   )}
                 >
                   <item.icon className="h-4 w-4" />
                   {item.label}
                 </Link>
-              );
+              )
             })}
             <div className="my-2 border-t border-border" />
             <Link
@@ -148,13 +100,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       <div className="overflow-x-auto lg:hidden">
         <nav className="flex gap-1 pb-2">
           {navItems.map((item) => {
-            const isActive =
-              pathname +
-                (typeof window !== "undefined"
-                  ? window.location.search
-                  : "") ===
-                item.href ||
-              (item.href.includes("?") === false && pathname === item.href);
+            const isActive = pathname + (typeof window !== "undefined" ? window.location.search : "") === item.href ||
+              (item.href.includes("?") === false && pathname === item.href)
             return (
               <Link
                 key={item.href}
@@ -163,13 +110,13 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   "flex shrink-0 items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   isActive
                     ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-accent",
+                    : "text-muted-foreground hover:bg-accent"
                 )}
               >
                 <item.icon className="h-4 w-4" />
                 {item.label}
               </Link>
-            );
+            )
           })}
         </nav>
       </div>
@@ -177,5 +124,5 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       {/* Main content */}
       <main className="flex-1 min-w-0">{children}</main>
     </div>
-  );
+  )
 }
