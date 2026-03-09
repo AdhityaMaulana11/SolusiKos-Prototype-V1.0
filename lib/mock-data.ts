@@ -6,6 +6,7 @@ import type {
   RegionData,
   User,
   Property,
+  PropertyMedia,
   Booking,
   Payment,
   ServiceRequest,
@@ -15,9 +16,12 @@ import type {
   SurveyVisit,
   QAThread,
   ChatMessage,
+  Review,
+  TrustedContact,
+  TrustedContactNotification,
+  PrivateChatRoom,
+  PrivateChatMessage,
 } from "./types";
-
-export const ADMIN_FEE_PERCENTAGE = 5;
 
 export const regions: RegionData[] = [
   {
@@ -193,6 +197,46 @@ export const properties: Property[] = [
     description:
       "Kos nyaman di pusat kota Kuningan, dekat dengan kampus dan pusat perbelanjaan. Fasilitas lengkap dengan WiFi cepat dan dapur bersama.",
     images: ["/placeholder-kos-1.jpg"],
+    // TODO: Replace with real media assets
+    media: {
+      photos: [
+        {
+          id: "photo-1-1",
+          url: "/images/kos/prop-1/photo-1.jpg",
+          caption: "Tampak Depan",
+          isPrimary: true,
+        },
+        {
+          id: "photo-1-2",
+          url: "/images/kos/prop-1/photo-2.jpg",
+          caption: "Kamar Tidur",
+        },
+        {
+          id: "photo-1-3",
+          url: "/images/kos/prop-1/photo-3.jpg",
+          caption: "Kamar Mandi",
+        },
+        {
+          id: "photo-1-4",
+          url: "/images/kos/prop-1/photo-4.jpg",
+          caption: "Dapur Bersama",
+        },
+        {
+          id: "photo-1-5",
+          url: "/images/kos/prop-1/photo-5.jpg",
+          caption: "Area Parkir",
+        },
+      ],
+      videoTour: {
+        url: "/videos/kos/prop-1/tour.mp4",
+        thumbnail: "/images/kos/prop-1/video-thumb.jpg",
+        duration: "2:30",
+      },
+      tour360: {
+        url: "/360/kos/prop-1/tour.html",
+        thumbnail: "/images/kos/prop-1/360-thumb.jpg",
+      },
+    },
     amenities: [
       "WiFi",
       "AC",
@@ -213,6 +257,14 @@ export const properties: Property[] = [
     reviewCount: 45,
     featured: true,
     rentalPeriods: ["mingguan", "bulanan", "tahunan"],
+    hasVideoTour: true,
+    has360Tour: true,
+    coordinates: { lat: -6.9751, lng: 108.4836 },
+    nearbyPlaces: [
+      { name: "Universitas Kuningan", distance: "500m", type: "campus" },
+      { name: "Pasar Kuningan", distance: "300m", type: "market" },
+      { name: "RS Ciremai", distance: "1.2km", type: "hospital" },
+    ],
   },
   {
     id: "prop-2",
@@ -222,6 +274,40 @@ export const properties: Property[] = [
     description:
       "Kos khusus putri dengan lingkungan aman dan bersih. Tersedia penjaga 24 jam dan CCTV.",
     images: ["/placeholder-kos-2.jpg"],
+    media: {
+      photos: [
+        {
+          id: "photo-2-1",
+          url: "/images/kos/prop-2/photo-1.jpg",
+          caption: "Tampak Depan",
+          isPrimary: true,
+        },
+        {
+          id: "photo-2-2",
+          url: "/images/kos/prop-2/photo-2.jpg",
+          caption: "Kamar Tidur",
+        },
+        {
+          id: "photo-2-3",
+          url: "/images/kos/prop-2/photo-3.jpg",
+          caption: "Kamar Mandi",
+        },
+        {
+          id: "photo-2-4",
+          url: "/images/kos/prop-2/photo-4.jpg",
+          caption: "Area CCTV",
+        },
+      ],
+      videoTour: {
+        url: "/videos/kos/prop-2/tour.mp4",
+        thumbnail: "/images/kos/prop-2/video-thumb.jpg",
+        duration: "2:15",
+      },
+      tour360: {
+        url: "/360/kos/prop-2/tour.html",
+        thumbnail: "/images/kos/prop-2/360-thumb.jpg",
+      },
+    },
     amenities: [
       "WiFi",
       "AC",
@@ -242,6 +328,13 @@ export const properties: Property[] = [
     reviewCount: 32,
     featured: true,
     rentalPeriods: ["bulanan", "tahunan"],
+    hasVideoTour: true,
+    has360Tour: true,
+    coordinates: { lat: -6.978, lng: 108.4801 },
+    nearbyPlaces: [
+      { name: "Universitas Kuningan", distance: "800m", type: "campus" },
+      { name: "Mall Kuningan", distance: "1km", type: "mall" },
+    ],
   },
   {
     id: "prop-3",
@@ -270,6 +363,8 @@ export const properties: Property[] = [
     reviewCount: 18,
     featured: false,
     rentalPeriods: ["mingguan", "bulanan"],
+    hasVideoTour: true,
+    has360Tour: false,
   },
   {
     id: "prop-4",
@@ -299,6 +394,8 @@ export const properties: Property[] = [
     reviewCount: 28,
     featured: true,
     rentalPeriods: ["bulanan", "tahunan"],
+    hasVideoTour: true,
+    has360Tour: false,
   },
   {
     id: "prop-5",
@@ -328,6 +425,8 @@ export const properties: Property[] = [
     reviewCount: 52,
     featured: true,
     rentalPeriods: ["mingguan", "bulanan", "tahunan"],
+    hasVideoTour: true,
+    has360Tour: true,
   },
   {
     id: "prop-6",
@@ -356,6 +455,8 @@ export const properties: Property[] = [
     reviewCount: 15,
     featured: false,
     rentalPeriods: ["bulanan"],
+    hasVideoTour: false,
+    has360Tour: false,
   },
   {
     id: "prop-7",
@@ -386,6 +487,8 @@ export const properties: Property[] = [
     reviewCount: 78,
     featured: true,
     rentalPeriods: ["mingguan", "bulanan", "tahunan"],
+    hasVideoTour: true,
+    has360Tour: true,
   },
   {
     id: "prop-8",
@@ -408,6 +511,8 @@ export const properties: Property[] = [
     reviewCount: 10,
     featured: false,
     rentalPeriods: ["mingguan", "bulanan"],
+    hasVideoTour: false,
+    has360Tour: false,
   },
   {
     id: "prop-9",
@@ -437,6 +542,8 @@ export const properties: Property[] = [
     reviewCount: 22,
     featured: true,
     rentalPeriods: ["mingguan", "bulanan", "tahunan"],
+    hasVideoTour: true,
+    has360Tour: false,
   },
   {
     id: "prop-10",
@@ -466,6 +573,8 @@ export const properties: Property[] = [
     reviewCount: 14,
     featured: false,
     rentalPeriods: ["bulanan", "tahunan"],
+    hasVideoTour: false,
+    has360Tour: false,
   },
   {
     id: "prop-11",
@@ -494,6 +603,101 @@ export const properties: Property[] = [
     reviewCount: 8,
     featured: false,
     rentalPeriods: ["bulanan", "tahunan"],
+    hasVideoTour: false,
+    has360Tour: false,
+  },
+];
+
+export const reviews: Review[] = [
+  {
+    id: "rev-1",
+    propertyId: "prop-1",
+    tenantId: "t1",
+    bookingId: "bk-1",
+    rating: 5,
+    comment:
+      "Kos sangat nyaman dan bersih. Pemilik ramah dan responsif. WiFi cepat dan stabil. Sangat recommended!",
+    createdAt: "2026-02-15",
+  },
+  {
+    id: "rev-2",
+    propertyId: "prop-1",
+    tenantId: "t2",
+    bookingId: "bk-past-1",
+    rating: 4,
+    comment:
+      "Lokasi strategis, dekat dengan kampus. Fasilitas lengkap. Hanya saja parkir terbatas.",
+    createdAt: "2026-01-20",
+  },
+  {
+    id: "rev-3",
+    propertyId: "prop-5",
+    tenantId: "t2",
+    bookingId: "bk-2",
+    rating: 5,
+    comment:
+      "Kos terbaik di Cirebon! Rooftop view nya bagus banget. Cocok untuk anak muda.",
+    createdAt: "2026-03-01",
+  },
+  {
+    id: "rev-4",
+    propertyId: "prop-7",
+    tenantId: "t3",
+    bookingId: "bk-past-2",
+    rating: 5,
+    comment:
+      "Worth the price! Kolam renang dan gym nya top. Seperti tinggal di hotel.",
+    createdAt: "2026-02-28",
+  },
+];
+
+export const trustedContacts: TrustedContact[] = [
+  {
+    id: "tc-1",
+    tenantId: "t1",
+    name: "Ibu Susanti",
+    relationship: "Ibu",
+    email: "ibu.susanti@email.com",
+    phone: "081298765432",
+    createdAt: "2026-01-10",
+  },
+  {
+    id: "tc-2",
+    tenantId: "t2",
+    name: "Pak Pratama",
+    relationship: "Ayah",
+    email: "pak.pratama@email.com",
+    phone: "081387654321",
+    createdAt: "2026-01-25",
+  },
+];
+
+export const trustedContactNotifications: TrustedContactNotification[] = [
+  {
+    id: "tcn-1",
+    trustedContactId: "tc-1",
+    type: "booking_confirmed",
+    message:
+      "Booking untuk Rina Susanti di Kos Melati Indah telah dikonfirmasi.",
+    sentAt: "2026-01-15 10:30",
+    method: "email",
+  },
+  {
+    id: "tcn-2",
+    trustedContactId: "tc-1",
+    type: "payment_confirmed",
+    message: "Pembayaran sewa bulan Februari dari Rina Susanti telah diterima.",
+    sentAt: "2026-02-14 14:20",
+    method: "email",
+  },
+  {
+    id: "tcn-3",
+    trustedContactId: "tc-1",
+    type: "payment_due",
+    message:
+      "Pengingat: Pembayaran sewa bulan April untuk Rina Susanti akan jatuh tempo dalam 7 hari.",
+    sentAt: "2026-04-08 09:00",
+    method: "sms",
   },
 ];
 
@@ -506,11 +710,11 @@ export const bookings: Booking[] = [
     checkOut: "2026-07-15",
     status: "aktif",
     monthlyRent: 1500000,
-    adminFee: 75000,
-    totalPaid: 4725000,
+    totalPaid: 4500000,
     rentalPeriod: "bulanan",
     duration: 6,
     createdAt: "2026-01-10",
+    trustedContactId: "tc-1",
   },
   {
     id: "bk-2",
@@ -520,11 +724,11 @@ export const bookings: Booking[] = [
     checkOut: "2026-08-01",
     status: "aktif",
     monthlyRent: 1300000,
-    adminFee: 65000,
-    totalPaid: 2730000,
+    totalPaid: 2600000,
     rentalPeriod: "bulanan",
     duration: 6,
     createdAt: "2026-01-25",
+    trustedContactId: "tc-2",
   },
   {
     id: "bk-3",
@@ -534,11 +738,36 @@ export const bookings: Booking[] = [
     checkOut: "2026-06-01",
     status: "menunggu",
     monthlyRent: 1800000,
-    adminFee: 90000,
     totalPaid: 0,
     rentalPeriod: "bulanan",
     duration: 3,
     createdAt: "2026-02-20",
+  },
+  {
+    id: "bk-past-1",
+    propertyId: "prop-1",
+    tenantId: "t2",
+    checkIn: "2025-06-01",
+    checkOut: "2025-12-01",
+    status: "selesai",
+    monthlyRent: 1500000,
+    totalPaid: 9000000,
+    rentalPeriod: "bulanan",
+    duration: 6,
+    createdAt: "2025-05-20",
+  },
+  {
+    id: "bk-past-2",
+    propertyId: "prop-7",
+    tenantId: "t3",
+    checkIn: "2025-09-01",
+    checkOut: "2026-02-01",
+    status: "selesai",
+    monthlyRent: 2500000,
+    totalPaid: 12500000,
+    rentalPeriod: "bulanan",
+    duration: 5,
+    createdAt: "2025-08-25",
   },
 ];
 
@@ -548,8 +777,7 @@ export const payments: Payment[] = [
     bookingId: "bk-1",
     tenantId: "t1",
     ownerId: "o1",
-    amount: 1575000,
-    adminFee: 75000,
+    amount: 1500000,
     netAmount: 1500000,
     status: "lunas",
     method: "BCA Virtual Account",
@@ -562,8 +790,7 @@ export const payments: Payment[] = [
     bookingId: "bk-1",
     tenantId: "t1",
     ownerId: "o1",
-    amount: 1575000,
-    adminFee: 75000,
+    amount: 1500000,
     netAmount: 1500000,
     status: "lunas",
     method: "GoPay",
@@ -576,8 +803,7 @@ export const payments: Payment[] = [
     bookingId: "bk-1",
     tenantId: "t1",
     ownerId: "o1",
-    amount: 1575000,
-    adminFee: 75000,
+    amount: 1500000,
     netAmount: 1500000,
     status: "belum_bayar",
     method: "",
@@ -589,8 +815,7 @@ export const payments: Payment[] = [
     bookingId: "bk-2",
     tenantId: "t2",
     ownerId: "o1",
-    amount: 1365000,
-    adminFee: 65000,
+    amount: 1300000,
     netAmount: 1300000,
     status: "lunas",
     method: "Mandiri Virtual Account",
@@ -603,8 +828,7 @@ export const payments: Payment[] = [
     bookingId: "bk-2",
     tenantId: "t2",
     ownerId: "o1",
-    amount: 1365000,
-    adminFee: 65000,
+    amount: 1300000,
     netAmount: 1300000,
     status: "menunggu",
     method: "OVO",
@@ -721,7 +945,7 @@ export const notifications: AppNotification[] = [
     id: "n-1",
     userId: "t1",
     title: "Pembayaran Berhasil",
-    message: "Pembayaran bulan Maret sebesar Rp 1.575.000 telah diterima.",
+    message: "Pembayaran bulan Maret sebesar Rp 1.500.000 telah diterima.",
     type: "payment",
     read: true,
     createdAt: "2026-03-13",
@@ -740,7 +964,7 @@ export const notifications: AppNotification[] = [
     userId: "t1",
     title: "Tagihan Baru",
     message:
-      "Tagihan bulan April sebesar Rp 1.575.000 telah dibuat. Jatuh tempo: 15 April 2026.",
+      "Tagihan bulan April sebesar Rp 1.500.000 telah dibuat. Jatuh tempo: 15 April 2026.",
     type: "payment",
     read: false,
     createdAt: "2026-04-01",
@@ -805,6 +1029,15 @@ export const notifications: AppNotification[] = [
     read: false,
     createdAt: "2026-04-01",
   },
+  {
+    id: "n-10",
+    userId: "t1",
+    title: "Review Baru",
+    message: "Terima kasih telah memberikan review untuk Kos Melati Indah!",
+    type: "review",
+    read: true,
+    createdAt: "2026-02-15",
+  },
 ];
 
 export const surveyVisits: SurveyVisit[] = [
@@ -841,6 +1074,7 @@ export const qaThreads: QAThread[] = [
     answer:
       "Maaf, saat ini kami hanya menyediakan parkir motor. Namun ada lahan parkir umum di sebelah kos yang bisa digunakan.",
     answeredAt: "2026-02-16",
+    answeredBy: "owner",
     createdAt: "2026-02-15",
   },
   {
@@ -858,6 +1092,7 @@ export const qaThreads: QAThread[] = [
     answer:
       "Tamu diperbolehkan berkunjung hingga pukul 22.00 WIB. Setelah itu, tamu tidak diperkenankan berada di area kos.",
     answeredAt: "2026-02-21",
+    answeredBy: "owner",
     createdAt: "2026-02-20",
   },
   {
@@ -868,7 +1103,70 @@ export const qaThreads: QAThread[] = [
     answer:
       "Ya, kolam renang buka setiap hari dari pukul 06.00 - 20.00 WIB untuk seluruh penghuni.",
     answeredAt: "2026-03-02",
+    answeredBy: "admin",
     createdAt: "2026-03-01",
+  },
+];
+
+export const privateChatRooms: PrivateChatRoom[] = [
+  {
+    id: "pcr-1",
+    propertyId: "prop-1",
+    tenantId: "t1",
+    ownerId: "o1",
+    createdAt: "2026-01-15",
+  },
+  {
+    id: "pcr-2",
+    propertyId: "prop-5",
+    tenantId: "t2",
+    ownerId: "o1",
+    createdAt: "2026-02-01",
+  },
+];
+
+export const privateChatMessages: PrivateChatMessage[] = [
+  {
+    id: "pcm-1",
+    roomId: "pcr-1",
+    senderId: "t1",
+    message:
+      "Selamat siang Pak, saya ingin bertanya soal jadwal pembersihan AC.",
+    timestamp: "2026-03-10 10:30",
+    isOwner: false,
+  },
+  {
+    id: "pcm-2",
+    roomId: "pcr-1",
+    senderId: "o1",
+    message:
+      "Selamat siang Rina. AC dijadwalkan dibersihkan setiap 3 bulan sekali. Jadwal berikutnya bulan April.",
+    timestamp: "2026-03-10 10:45",
+    isOwner: true,
+  },
+  {
+    id: "pcm-3",
+    roomId: "pcr-1",
+    senderId: "t1",
+    message: "Baik Pak, terima kasih informasinya.",
+    timestamp: "2026-03-10 10:50",
+    isOwner: false,
+  },
+  {
+    id: "pcm-4",
+    roomId: "pcr-2",
+    senderId: "t2",
+    message: "Pak, mau tanya soal perpanjangan sewa bulan depan.",
+    timestamp: "2026-03-12 14:00",
+    isOwner: false,
+  },
+  {
+    id: "pcm-5",
+    roomId: "pcr-2",
+    senderId: "o1",
+    message: "Silakan Budi, ada yang bisa saya bantu?",
+    timestamp: "2026-03-12 14:15",
+    isOwner: true,
   },
 ];
 
@@ -901,7 +1199,7 @@ export const adminChatMessages: ChatMessage[] = [
     id: "cm-4",
     senderId: "a1",
     message:
-      "Tidak ada biaya tambahan. Harga sewa tetap sama sesuai yang tertera di listing. Biaya admin juga tetap 5% dari sewa bulanan.",
+      "Tidak ada biaya tambahan. Harga sewa tetap sama sesuai yang tertera di listing. Platform dimonetisasi melalui membership pemilik.",
     timestamp: "2026-03-10 09:12",
     isAdmin: true,
   },
@@ -919,6 +1217,12 @@ export const membershipPlans: MembershipPlan[] = [
       "Notifikasi dasar",
     ],
     highlighted: false,
+    videoTour: false,
+    tour360: false,
+    featuredPlacement: false,
+    prioritySearch: false,
+    verifiedBadge: false,
+    analyticsExport: false,
   },
   {
     tier: "perak",
@@ -926,6 +1230,7 @@ export const membershipPlans: MembershipPlan[] = [
     price: 99000,
     features: [
       "Listing prioritas (maks. 10 properti)",
+      "Video Room Tour di listing",
       "Badge Perak di listing",
       "Laporan keuangan bulanan",
       "Dukungan prioritas",
@@ -933,6 +1238,12 @@ export const membershipPlans: MembershipPlan[] = [
       "Notifikasi lengkap",
     ],
     highlighted: false,
+    videoTour: true,
+    tour360: false,
+    featuredPlacement: false,
+    prioritySearch: true,
+    verifiedBadge: false,
+    analyticsExport: false,
   },
   {
     tier: "emas",
@@ -940,15 +1251,56 @@ export const membershipPlans: MembershipPlan[] = [
     price: 199000,
     features: [
       "Listing tak terbatas",
-      "Badge Emas eksklusif",
+      "Video + 360° Room Tour",
+      "Badge Emas eksklusif & Verified",
       "Listing teratas di pencarian",
+      "Tampil di halaman utama",
       "Laporan keuangan real-time",
       "Dukungan 24/7 via WhatsApp",
-      "Promosi di halaman utama",
-      "Analitik properti lengkap",
-      "Akses fitur beta",
+      "Analitik properti lengkap + Export",
+      "Kredit promosi Meta Ads (Rp 100.000)",
     ],
     highlighted: true,
+    videoTour: true,
+    tour360: true,
+    featuredPlacement: true,
+    prioritySearch: true,
+    verifiedBadge: true,
+    analyticsExport: true,
+    metaAdsCredit: 100000,
+  },
+];
+
+export const demoSteps = [
+  {
+    id: 1,
+    title: "Cari Kos",
+    description:
+      "Filter properti di Rebana Metropolitan berdasarkan lokasi, harga, dan fasilitas.",
+  },
+  {
+    id: 2,
+    title: "Lihat Detail & Media",
+    description:
+      "Buka properti, tonton Video Tour dan 360° Room Tour, lalu jadwalkan survey.",
+  },
+  {
+    id: 3,
+    title: "Login & Booking",
+    description:
+      "Login sebagai Tenant, booking kos, dan tambahkan Trusted Contact untuk notifikasi.",
+  },
+  {
+    id: 4,
+    title: "Dasbor Pemilik",
+    description:
+      "Beralih ke Owner untuk melihat survey masuk, Q&A, dan upgrade membership.",
+  },
+  {
+    id: 5,
+    title: "Notifikasi & Chat",
+    description:
+      "Cek notifikasi dan Room Chat untuk melihat interaksi tenant-owner.",
   },
 ];
 

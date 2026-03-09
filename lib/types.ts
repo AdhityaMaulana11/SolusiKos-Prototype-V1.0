@@ -38,13 +38,57 @@ export interface User {
   createdAt: string;
 }
 
+export interface TrustedContact {
+  id: string;
+  tenantId: string;
+  name: string;
+  relationship: string;
+  email: string;
+  phone: string;
+  createdAt: string;
+}
+
+export interface TrustedContactNotification {
+  id: string;
+  trustedContactId: string;
+  type:
+    | "booking_confirmed"
+    | "payment_confirmed"
+    | "payment_due"
+    | "survey_reminder";
+  message: string;
+  sentAt: string;
+  method: "email" | "sms";
+}
+
+export interface PropertyMedia {
+  photos: {
+    id: string;
+    url: string;
+    caption?: string;
+    isPrimary?: boolean;
+  }[];
+  videoTour?: {
+    url: string;
+    thumbnail?: string;
+    duration?: string;
+  };
+  tour360?: {
+    url: string;
+    thumbnail?: string;
+  };
+}
+
 export interface Property {
   id: string;
   name: string;
   region: Region;
   address: string;
   description: string;
+  // Legacy single images array (for backward compatibility)
   images: string[];
+  // New structured media object for real assets
+  media?: PropertyMedia;
   amenities: string[];
   pricePerMonth: number;
   pricePerWeek?: number;
@@ -58,6 +102,28 @@ export interface Property {
   reviewCount: number;
   featured: boolean;
   rentalPeriods: RentalPeriod[];
+  hasVideoTour?: boolean;
+  has360Tour?: boolean;
+  // Additional location details
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+  nearbyPlaces?: {
+    name: string;
+    distance: string;
+    type: "campus" | "mall" | "hospital" | "station" | "market" | "other";
+  }[];
+}
+
+export interface Review {
+  id: string;
+  propertyId: string;
+  tenantId: string;
+  bookingId: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
 }
 
 export interface Booking {
@@ -68,11 +134,11 @@ export interface Booking {
   checkOut: string;
   status: BookingStatus;
   monthlyRent: number;
-  adminFee: number;
   totalPaid: number;
   rentalPeriod: RentalPeriod;
   duration: number;
   createdAt: string;
+  trustedContactId?: string;
 }
 
 export interface Payment {
@@ -81,7 +147,6 @@ export interface Payment {
   tenantId: string;
   ownerId: string;
   amount: number;
-  adminFee: number;
   netAmount: number;
   status: PaymentStatus;
   method: string;
@@ -125,7 +190,9 @@ export interface AppNotification {
     | "membership"
     | "system"
     | "survey"
-    | "qna";
+    | "qna"
+    | "review"
+    | "trusted_contact";
   read: boolean;
   createdAt: string;
 }
@@ -136,6 +203,13 @@ export interface MembershipPlan {
   price: number;
   features: string[];
   highlighted: boolean;
+  videoTour: boolean;
+  tour360: boolean;
+  featuredPlacement: boolean;
+  prioritySearch: boolean;
+  verifiedBadge: boolean;
+  analyticsExport: boolean;
+  metaAdsCredit?: number;
 }
 
 export interface SurveyVisit {
@@ -150,6 +224,33 @@ export interface SurveyVisit {
   createdAt: string;
 }
 
+export interface RoomChatMessage {
+  id: string;
+  threadId: string;
+  senderId: string;
+  message: string;
+  isOwner: boolean;
+  isAdmin: boolean;
+  timestamp: string;
+}
+
+export interface PrivateChatRoom {
+  id: string;
+  propertyId: string;
+  tenantId: string;
+  ownerId: string;
+  createdAt: string;
+}
+
+export interface PrivateChatMessage {
+  id: string;
+  roomId: string;
+  senderId: string;
+  message: string;
+  timestamp: string;
+  isOwner: boolean;
+}
+
 export interface QAThread {
   id: string;
   propertyId: string;
@@ -157,7 +258,9 @@ export interface QAThread {
   question: string;
   answer?: string;
   answeredAt?: string;
+  answeredBy?: "owner" | "admin";
   createdAt: string;
+  messages?: RoomChatMessage[];
 }
 
 export interface ChatMessage {
@@ -166,4 +269,11 @@ export interface ChatMessage {
   message: string;
   timestamp: string;
   isAdmin: boolean;
+}
+
+export interface DemoStep {
+  id: number;
+  title: string;
+  description: string;
+  target?: string;
 }
