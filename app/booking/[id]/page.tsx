@@ -5,12 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/layout/navbar";
 import { useApp } from "@/lib/app-context";
-import {
-  formatRupiah,
-  getUser,
-  rentalPeriodLabel,
-  ADMIN_FEE_PERCENTAGE,
-} from "@/lib/mock-data";
+import { formatRupiah, getUser, rentalPeriodLabel } from "@/lib/mock-data";
 import type { RentalPeriod } from "@/lib/types";
 import {
   ArrowLeft,
@@ -111,7 +106,6 @@ export default function BookingPage({
 
   const basePrice = getBasePrice();
   const subtotal = basePrice * duration;
-  const adminFee = Math.round((subtotal * ADMIN_FEE_PERCENTAGE) / 100);
   const grandTotal = subtotal + adminFee;
 
   const checkOutDate = (() => {
@@ -399,14 +393,6 @@ export default function BookingPage({
                   {formatRupiah(subtotal)}
                 </span>
               </div>
-              <div className="mt-1 flex justify-between">
-                <span className="text-muted-foreground">
-                  Biaya admin ({ADMIN_FEE_PERCENTAGE}%)
-                </span>
-                <span className="text-foreground">
-                  {formatRupiah(adminFee)}
-                </span>
-              </div>
               <div className="border-t border-border mt-2 pt-2 flex justify-between font-bold">
                 <span className="text-foreground">Total Pembayaran</span>
                 <span className="text-primary text-lg">
@@ -470,14 +456,6 @@ export default function BookingPage({
                 </span>
                 <span className="text-foreground">
                   {formatRupiah(subtotal)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">
-                  Biaya admin ({ADMIN_FEE_PERCENTAGE}%)
-                </span>
-                <span className="text-foreground">
-                  {formatRupiah(adminFee)}
                 </span>
               </div>
               <div className="border-t border-border pt-2 flex justify-between font-bold">

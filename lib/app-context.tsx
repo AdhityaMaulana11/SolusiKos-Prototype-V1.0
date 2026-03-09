@@ -30,8 +30,6 @@ import type {
   PrivateChatMessage,
 } from "./types";
 
-// Admin fee percentage for transactions
-export const ADMIN_FEE_PERCENTAGE = 5;
 import {
   users as initialUsers,
   properties as initialProperties,

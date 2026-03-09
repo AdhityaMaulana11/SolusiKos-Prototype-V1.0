@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { useApp, ADMIN_FEE_PERCENTAGE } from "@/lib/app-context";
+import { useApp } from "@/lib/app-context";
 import {
   formatRupiah,
   getUser,
@@ -246,13 +246,7 @@ export default function AdminPanel() {
                           borderRadius: "8px",
                         }}
                       />
-                      <Legend
-                        formatter={(v) =>
-                          v === "volume"
-                            ? "Volume Transaksi"
-                            : `Fee Admin (${ADMIN_FEE_PERCENTAGE}%)`
-                        }
-                      />
+
                       <Bar
                         dataKey="volume"
                         fill="oklch(0.7 0.16 55)"
@@ -343,14 +337,6 @@ export default function AdminPanel() {
                   <p className="text-sm text-muted-foreground">Total Volume</p>
                   <p className="mt-1 text-2xl font-bold text-card-foreground">
                     {formatRupiah(totalTransactionVolume)}
-                  </p>
-                </div>
-                <div className="rounded-xl border border-border bg-card p-4">
-                  <p className="text-sm text-muted-foreground">
-                    Total Fee ({ADMIN_FEE_PERCENTAGE}%)
-                  </p>
-                  <p className="mt-1 text-2xl font-bold text-primary">
-                    {formatRupiah(totalAdminFees)}
                   </p>
                 </div>
                 <div className="rounded-xl border border-border bg-card p-4">
