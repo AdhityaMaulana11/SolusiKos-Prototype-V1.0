@@ -1,10 +1,16 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { MapPin, Star, Users, Wifi, Wind, Bath, Calendar } from "lucide-react"
-import type { Property } from "@/lib/types"
-import { formatRupiah, roomTypeLabel, regionLabel, rentalPeriodLabel, getUser } from "@/lib/mock-data"
-import { cn } from "@/lib/utils"
+import Link from "next/link";
+import { MapPin, Star, Users, Wifi, Wind, Bath, Calendar } from "lucide-react";
+import type { Property } from "@/lib/types";
+import {
+  formatRupiah,
+  roomTypeLabel,
+  regionLabel,
+  rentalPeriodLabel,
+  getUser,
+} from "@/lib/mock-data";
+import { cn } from "@/lib/utils";
 
 export function ListingCard({ property }: { property: Property }) {
   const gradients: Record<string, string> = {
@@ -19,7 +25,7 @@ export function ListingCard({ property }: { property: Property }) {
     "prop-9": "from-indigo-400 to-blue-500",
     "prop-10": "from-yellow-400 to-amber-500",
     "prop-11": "from-cyan-400 to-blue-500",
-  }
+  };
 
   return (
     <Link
@@ -27,10 +33,12 @@ export function ListingCard({ property }: { property: Property }) {
       className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-all hover:shadow-lg hover:border-primary/30 hover:-translate-y-0.5"
     >
       {/* Image placeholder */}
-      <div className={cn(
-        "relative h-48 bg-gradient-to-br transition-transform",
-        gradients[property.id] ?? "from-amber-400 to-orange-500"
-      )}>
+      <div
+        className={cn(
+          "relative h-48 bg-gradient-to-br transition-transform",
+          gradients[property.id] ?? "from-amber-400 to-orange-500",
+        )}
+      >
         <div className="absolute inset-0 flex items-center justify-center opacity-20">
           <div className="grid grid-cols-3 gap-2 p-8">
             {Array.from({ length: 9 }).map((_, i) => (
@@ -41,10 +49,14 @@ export function ListingCard({ property }: { property: Property }) {
         {/* Badges */}
         <div className="absolute left-3 top-3 flex gap-2">
           {property.membershipTier !== "gratis" && (
-            <span className={cn(
-              "rounded-full px-2.5 py-0.5 text-xs font-semibold text-white",
-              property.membershipTier === "emas" ? "bg-amber-500" : "bg-slate-400"
-            )}>
+            <span
+              className={cn(
+                "rounded-full px-2.5 py-0.5 text-xs font-semibold text-white",
+                property.membershipTier === "emas"
+                  ? "bg-amber-500"
+                  : "bg-slate-400",
+              )}
+            >
               {property.membershipTier === "emas" ? "Emas" : "Perak"}
             </span>
           )}
@@ -75,13 +87,18 @@ export function ListingCard({ property }: { property: Property }) {
             <Star className="h-3.5 w-3.5 fill-current" />
             <span className="font-medium">{property.rating}</span>
           </div>
-          <span className="text-muted-foreground">({property.reviewCount} ulasan)</span>
+          <span className="text-muted-foreground">
+            ({property.reviewCount} ulasan)
+          </span>
         </div>
 
         {/* Amenities preview */}
         <div className="flex flex-wrap gap-1.5 mt-1">
           {property.amenities.slice(0, 3).map((a) => (
-            <span key={a} className="rounded-md bg-secondary px-2 py-0.5 text-xs text-secondary-foreground">
+            <span
+              key={a}
+              className="rounded-md bg-secondary px-2 py-0.5 text-xs text-secondary-foreground"
+            >
               {a}
             </span>
           ))}
@@ -97,7 +114,10 @@ export function ListingCard({ property }: { property: Property }) {
           <Calendar className="h-3 w-3 text-muted-foreground" />
           <div className="flex gap-1">
             {property.rentalPeriods.map((rp) => (
-              <span key={rp} className="rounded bg-accent px-1.5 py-0.5 text-[10px] font-medium text-accent-foreground">
+              <span
+                key={rp}
+                className="rounded bg-accent px-1.5 py-0.5 text-[10px] font-medium text-accent-foreground"
+              >
                 {rentalPeriodLabel(rp)}
               </span>
             ))}
@@ -107,7 +127,9 @@ export function ListingCard({ property }: { property: Property }) {
         {/* Footer */}
         <div className="mt-auto flex items-end justify-between pt-3 border-t border-border">
           <div>
-            <span className="text-lg font-bold text-primary">{formatRupiah(property.pricePerMonth)}</span>
+            <span className="text-lg font-bold text-primary">
+              {formatRupiah(property.pricePerMonth)}
+            </span>
             <span className="text-sm text-muted-foreground">/bulan</span>
           </div>
           <div className="flex items-center gap-1 text-sm text-muted-foreground">
@@ -117,7 +139,7 @@ export function ListingCard({ property }: { property: Property }) {
         </div>
       </div>
     </Link>
-  )
+  );
 }
 
 export function ListingCardSkeleton() {
@@ -139,5 +161,5 @@ export function ListingCardSkeleton() {
         </div>
       </div>
     </div>
-  )
+  );
 }

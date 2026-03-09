@@ -9,13 +9,14 @@ import {
   useOwnerPayments,
   useOwnerSurveys,
   useNotifications,
-  ADMIN_FEE_PERCENTAGE,
 } from "@/lib/app-context";
 import {
   formatRupiah,
   getUser,
   getProperty,
   membershipLabel,
+  reviews as mockReviews,
+  membershipPlans,
 } from "@/lib/mock-data";
 import {
   Building2,
@@ -33,6 +34,12 @@ import {
   MapPin,
   MessageSquare,
   XCircle,
+  Crown,
+  Play,
+  ArrowRight,
+  Reply,
+  Info,
+  Zap,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -62,6 +69,84 @@ export default function OwnerPageContent() {
   const [surveyProcessingId, setSurveyProcessingId] = useState<string | null>(
     null,
   );
+  const [showDemoGuide, setShowDemoGuide] = useState(false);
+  const [demoStep, setDemoStep] = useState(0);
+  const [showReviewReply, setShowReviewReply] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
+
+  // Return early if not logged in
+  if (!state.currentUser) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        <Navbar />
+        <div className="flex flex-1 items-center justify-center">
+          <p className="text-muted-foreground">Memuat...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Get reviews for owner's properties
+  const ownerReviews = mockReviews.filter((review) =>
+    properties.some((prop) => prop.id === review.propertyId),
+  );
+  const averageRating =
+    ownerReviews.length > 0
+      ? (
+          ownerReviews.reduce((sum, r) => sum + r.rating, 0) /
+          ownerReviews.length
+        ).toFixed(1)
+      : "0.0";
+
+  // Get current membership tier
+  const currentTier =
+    membershipPlans.find(
+      (t) => t.tier === (state.currentUser?.membershipTier ?? "gratis"),
+    ) || membershipPlans[0];
+
+  // Demo Guide Steps
+  const demoSteps = [
+    {
+      title: "Selamat Datang di Dashboard Pemilik",
+      description:
+        "Dashboard ini membantu Anda mengelola properti kos, booking, dan pendapatan. Mari kita jelajahi fitur-fiturnya!",
+    },
+    {
+      title: "Overview Statistik",
+      description:
+        "Lihat ringkasan performa properti Anda: total properti, unit terisi, pendapatan bersih, dan booking yang menunggu persetujuan.",
+    },
+    {
+      title: "Kelola Properti",
+      description:
+        "Tab 'Properti' menampilkan semua kos Anda. Lihat tingkat hunian, rating, dan harga per properti.",
+    },
+    {
+      title: "Kelola Persetujuan Booking",
+      description:
+        "Tab 'Persetujuan' menampilkan semua permintaan booking. Anda bisa menyetujui atau menolak booking dengan notifikasi otomatis ke penghuni.",
+    },
+    {
+      title: "Ulasan & Rating",
+      description:
+        "Tab 'Ulasan' menampilkan feedback dari penghuni. Anda bisa membalas ulasan untuk meningkatkan kepercayaan calon penyewa.",
+    },
+    {
+      title: "Membership & Upgrade",
+      description:
+        "Tab 'Membership' menampilkan paket membership Anda. Tingkatkan untuk fitur premium seperti listing prioritas dan badge verified.",
+    },
+  ];
+
+  function handleReplyToReview(reviewId: string) {
+    if (replyText.trim()) {
+      toast.success("Balasan berhasil dikirim", {
+        description: "Balasan Anda akan ditampilkan di halaman properti",
+      });
+      setShowReviewReply(null);
+      setReplyText("");
+    }
+  }
 
   const totalRooms = properties.reduce((sum, p) => sum + p.totalRooms, 0);
   const occupiedRooms = properties.reduce(
@@ -174,6 +259,76 @@ export default function OwnerPageContent() {
     <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
       <DashboardShell>
+        {/* Demo Guide Overlay */}
+        {showDemoGuide && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+            <div className="w-full max-w-md rounded-xl border border-border bg-card p-6">
+              <div className="mb-2 flex items-center gap-2 text-primary">
+                <Play className="h-5 w-5" />
+                <span className="text-sm font-medium">
+                  Demo Guide ({demoStep + 1}/{demoSteps.length})
+                </span>
+              </div>
+              <h3 className="text-lg font-semibold text-card-foreground">
+                {demoSteps[demoStep].title}
+              </h3>
+              <p className="mt-1 text-muted-foreground">
+                {demoSteps[demoStep].description}
+              </p>
+              <div className="mt-6 flex justify-between">
+                <button
+                  onClick={() => {
+                    setShowDemoGuide(false);
+                    setDemoStep(0);
+                  }}
+                  className="text-sm text-muted-foreground hover:text-foreground"
+                >
+                  Lewati
+                </button>
+                <div className="flex gap-2">
+                  {demoStep > 0 && (
+                    <button
+                      onClick={() => setDemoStep(demoStep - 1)}
+                      className="rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-muted"
+                    >
+                      Sebelumnya
+                    </button>
+                  )}
+                  {demoStep < demoSteps.length - 1 ? (
+                    <button
+                      onClick={() => setDemoStep(demoStep + 1)}
+                      className="flex items-center gap-1 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                    >
+                      Selanjutnya <ArrowRight className="h-4 w-4" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setShowDemoGuide(false);
+                        setDemoStep(0);
+                        toast.success(
+                          "Demo selesai! Selamat menjelajahi dashboard.",
+                        );
+                      }}
+                      className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                    >
+                      Selesai
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div className="mt-4 h-1 w-full rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-primary transition-all"
+                  style={{
+                    width: `${((demoStep + 1) / demoSteps.length) * 100}%`,
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Ringkasan */}
         {(tab === "ringkasan" ||
           ![
@@ -182,20 +337,44 @@ export default function OwnerPageContent() {
             "keuangan",
             "persetujuan",
             "survey",
+            "ulasan",
+            "membership",
           ].includes(tab)) && (
           <div className="flex flex-col gap-6">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">
-                Dasbor Pemilik
-              </h1>
-              <p className="text-muted-foreground">
-                Membership:{" "}
-                <span className="font-semibold text-primary">
-                  {membershipLabel(
-                    state.currentUser.membershipTier ?? "gratis",
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="flex items-center gap-3">
+                  <h1 className="text-2xl font-bold text-foreground">
+                    Dasbor Pemilik
+                  </h1>
+                  {currentTier.id !== "gratis" && (
+                    <span
+                      className={cn(
+                        "flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold text-white",
+                        currentTier.id === "platinum"
+                          ? "bg-gradient-to-r from-purple-500 to-pink-500"
+                          : "bg-gradient-to-r from-yellow-500 to-amber-500",
+                      )}
+                    >
+                      <Crown className="h-3 w-3" /> {currentTier.name}
+                    </span>
                   )}
-                </span>
-              </p>
+                </div>
+                <p className="text-muted-foreground">
+                  Membership:{" "}
+                  <span className="font-semibold text-primary">
+                    {membershipLabel(
+                      state.currentUser.membershipTier ?? "gratis",
+                    )}
+                  </span>
+                </p>
+              </div>
+              <button
+                onClick={() => setShowDemoGuide(true)}
+                className="flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+              >
+                <Info className="h-4 w-4" /> Demo Guide
+              </button>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -522,7 +701,7 @@ export default function OwnerPageContent() {
           <div className="flex flex-col gap-6">
             <h1 className="text-2xl font-bold text-foreground">Arus Kas</h1>
 
-            <div className="grid gap-4 sm:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-xl border border-border bg-card p-4">
                 <p className="text-sm text-muted-foreground">
                   Total Pendapatan
@@ -537,18 +716,6 @@ export default function OwnerPageContent() {
                 </p>
                 <p className="mt-1 text-2xl font-bold text-amber-600 dark:text-amber-400">
                   {formatRupiah(pendingAmount)}
-                </p>
-              </div>
-              <div className="rounded-xl border border-border bg-card p-4">
-                <p className="text-sm text-muted-foreground">
-                  Biaya Admin ({ADMIN_FEE_PERCENTAGE}%)
-                </p>
-                <p className="mt-1 text-2xl font-bold text-muted-foreground">
-                  {formatRupiah(
-                    payments
-                      .filter((p) => p.status === "lunas")
-                      .reduce((sum, p) => sum + p.adminFee, 0),
-                  )}
                 </p>
               </div>
             </div>
@@ -574,11 +741,9 @@ export default function OwnerPageContent() {
                       tickFormatter={(v) => `${(v / 1000000).toFixed(1)}jt`}
                     />
                     <Tooltip
-                      formatter={(value: number, name: string) => [
+                      formatter={(value: number) => [
                         formatRupiah(value),
-                        name === "pendapatan"
-                          ? "Pendapatan Bersih"
-                          : "Biaya Admin",
+                        "Pendapatan",
                       ]}
                       contentStyle={{
                         backgroundColor: "oklch(0.995 0.001 75)",
@@ -586,19 +751,9 @@ export default function OwnerPageContent() {
                         borderRadius: "8px",
                       }}
                     />
-                    <Legend
-                      formatter={(value) =>
-                        value === "pendapatan" ? "Pendapatan" : "Biaya Admin"
-                      }
-                    />
                     <Bar
                       dataKey="pendapatan"
                       fill="oklch(0.7 0.16 55)"
-                      radius={[4, 4, 0, 0]}
-                    />
-                    <Bar
-                      dataKey="biaya_admin"
-                      fill="oklch(0.88 0.06 75)"
                       radius={[4, 4, 0, 0]}
                     />
                   </BarChart>
@@ -696,12 +851,6 @@ export default function OwnerPageContent() {
                         Jumlah
                       </th>
                       <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                        Admin Fee
-                      </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                        Bersih
-                      </th>
-                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                         Metode
                       </th>
                       <th className="px-4 py-3 text-left font-medium text-muted-foreground">
@@ -722,12 +871,6 @@ export default function OwnerPageContent() {
                           </td>
                           <td className="px-4 py-3 text-card-foreground">
                             {formatRupiah(p.amount)}
-                          </td>
-                          <td className="px-4 py-3 text-muted-foreground">
-                            {formatRupiah(p.adminFee)}
-                          </td>
-                          <td className="px-4 py-3 font-medium text-emerald-600 dark:text-emerald-400">
-                            {formatRupiah(p.netAmount)}
                           </td>
                           <td className="px-4 py-3 text-muted-foreground">
                             {p.method || "-"}
@@ -1167,6 +1310,347 @@ export default function OwnerPageContent() {
                 </p>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Ulasan Tab */}
+        {tab === "ulasan" && (
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">
+                  Ulasan Penghuni
+                </h1>
+                <p className="text-muted-foreground">
+                  Rating rata-rata: {averageRating}/5 dari {ownerReviews.length}{" "}
+                  ulasan
+                </p>
+              </div>
+            </div>
+
+            {ownerReviews.length === 0 ? (
+              <div className="flex flex-col items-center rounded-xl border border-border bg-card py-16">
+                <MessageSquare className="h-12 w-12 text-muted-foreground/30" />
+                <p className="mt-3 text-muted-foreground">
+                  Belum ada ulasan dari penghuni
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4">
+                {ownerReviews.map((review) => {
+                  const prop = getProperty(review.propertyId);
+                  const reviewer = getUser(review.tenantId);
+                  const reviewerName = reviewer?.name ?? "Penghuni";
+                  return (
+                    <div
+                      key={review.id}
+                      className="rounded-xl border border-border bg-card p-6"
+                    >
+                      <div className="mb-4 flex items-start justify-between">
+                        <div className="flex items-start gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 font-bold text-primary">
+                            {reviewerName.charAt(0)}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-semibold text-card-foreground">
+                                {reviewerName}
+                              </h4>
+                              {reviewer && (
+                                <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                  <CheckCircle className="mr-1 inline h-3 w-3" />
+                                  Penghuni Terverifikasi
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              {prop?.name}
+                            </p>
+                            <div className="mt-1 flex items-center gap-2">
+                              <div className="flex items-center">
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                  <Star
+                                    key={i}
+                                    className={cn(
+                                      "h-4 w-4",
+                                      i < review.rating
+                                        ? "fill-amber-500 text-amber-500"
+                                        : "text-muted-foreground",
+                                    )}
+                                  />
+                                ))}
+                              </div>
+                              <span className="text-sm text-muted-foreground">
+                                {review.createdAt}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <p className="text-card-foreground">{review.comment}</p>
+
+                      <div className="mt-4">
+                        {showReviewReply === review.id ? (
+                          <div className="flex flex-col gap-2">
+                            <textarea
+                              placeholder="Tulis balasan Anda..."
+                              value={replyText}
+                              onChange={(e) => setReplyText(e.target.value)}
+                              className="w-full rounded-lg border border-border bg-background p-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                              rows={3}
+                            />
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleReplyToReview(review.id)}
+                                className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                              >
+                                Kirim Balasan
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setShowReviewReply(null);
+                                  setReplyText("");
+                                }}
+                                className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted"
+                              >
+                                Batal
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setShowReviewReply(review.id)}
+                            className="flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+                          >
+                            <Reply className="h-4 w-4" /> Balas Ulasan
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Membership Tab */}
+        {tab === "membership" && (
+          <div className="flex flex-col gap-6">
+            <div className="mx-auto max-w-2xl text-center">
+              <h1 className="text-2xl font-bold text-foreground">
+                Pilih Paket Membership
+              </h1>
+              <p className="mt-1 text-muted-foreground">
+                Tingkatkan visibilitas properti Anda dan dapatkan lebih banyak
+                penyewa dengan fitur premium
+              </p>
+            </div>
+
+            <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
+              {membershipPlans.map((plan) => (
+                <div
+                  key={plan.tier}
+                  className={cn(
+                    "relative overflow-hidden rounded-xl border bg-card p-6",
+                    plan.tier ===
+                      (state.currentUser?.membershipTier ?? "gratis")
+                      ? "ring-2 ring-primary"
+                      : plan.highlighted
+                        ? "ring-2 ring-amber-500"
+                        : "border-border",
+                  )}
+                >
+                  {plan.highlighted && (
+                    <div className="absolute right-0 top-0 rounded-bl-lg bg-gradient-to-r from-yellow-500 to-amber-500 px-3 py-1 text-xs font-semibold text-white">
+                      Populer
+                    </div>
+                  )}
+                  {plan.tier ===
+                    (state.currentUser?.membershipTier ?? "gratis") && (
+                    <div className="absolute left-0 top-0 rounded-br-lg bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
+                      Paket Anda
+                    </div>
+                  )}
+                  <div className="pt-6 text-center">
+                    <div
+                      className={cn(
+                        "mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full",
+                        plan.tier === "platinum"
+                          ? "bg-gradient-to-r from-purple-500 to-pink-500"
+                          : plan.tier === "emas"
+                            ? "bg-gradient-to-r from-yellow-500 to-amber-500"
+                            : "bg-muted",
+                      )}
+                    >
+                      <Crown
+                        className={cn(
+                          "h-8 w-8",
+                          plan.tier === "gratis"
+                            ? "text-muted-foreground"
+                            : "text-white",
+                        )}
+                      />
+                    </div>
+                    <h3 className="text-xl font-semibold text-card-foreground">
+                      {plan.name}
+                    </h3>
+                  </div>
+                  <div className="my-6 text-center">
+                    <span className="text-3xl font-bold text-card-foreground">
+                      {plan.price === 0 ? "Gratis" : formatRupiah(plan.price)}
+                    </span>
+                    {plan.price > 0 && (
+                      <span className="text-muted-foreground">/bulan</span>
+                    )}
+                  </div>
+                  <ul className="mb-6 space-y-3">
+                    {plan.features.map((feature, index) => (
+                      <li
+                        key={index}
+                        className="flex items-start gap-2 text-sm"
+                      >
+                        <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                        <span className="text-card-foreground">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  {plan.tier ===
+                  (state.currentUser?.membershipTier ?? "gratis") ? (
+                    <button
+                      disabled
+                      className="w-full rounded-lg border border-border bg-muted py-2.5 text-sm font-medium text-muted-foreground"
+                    >
+                      Paket Aktif
+                    </button>
+                  ) : plan.tier === "gratis" ? (
+                    <button
+                      disabled
+                      className="w-full rounded-lg border border-border bg-muted py-2.5 text-sm font-medium text-muted-foreground"
+                    >
+                      Gratis
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() =>
+                        toast.success(`Upgrade ke ${plan.name} berhasil!`, {
+                          description:
+                            "Fitur premium sudah aktif untuk akun Anda.",
+                        })
+                      }
+                      className={cn(
+                        "flex w-full items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-semibold text-white",
+                        plan.tier === "platinum"
+                          ? "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                          : "bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600",
+                      )}
+                    >
+                      <Zap className="h-4 w-4" /> Upgrade Sekarang
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Benefits Comparison Table */}
+            <div className="mx-auto mt-8 max-w-4xl rounded-xl border border-border bg-card p-6">
+              <h2 className="mb-4 text-lg font-semibold text-card-foreground">
+                Perbandingan Fitur
+              </h2>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                        Fitur
+                      </th>
+                      <th className="px-4 py-3 text-center font-medium text-muted-foreground">
+                        Gratis
+                      </th>
+                      <th className="px-4 py-3 text-center font-medium text-muted-foreground">
+                        Emas
+                      </th>
+                      <th className="px-4 py-3 text-center font-medium text-muted-foreground">
+                        Platinum
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b border-border">
+                      <td className="px-4 py-3 text-card-foreground">
+                        Listing Properti
+                      </td>
+                      <td className="px-4 py-3 text-center text-card-foreground">
+                        3
+                      </td>
+                      <td className="px-4 py-3 text-center text-card-foreground">
+                        10
+                      </td>
+                      <td className="px-4 py-3 text-center text-card-foreground">
+                        Unlimited
+                      </td>
+                    </tr>
+                    <tr className="border-b border-border">
+                      <td className="px-4 py-3 text-card-foreground">
+                        Biaya Admin per Booking
+                      </td>
+                      <td className="px-4 py-3 text-center text-card-foreground">
+                        5%
+                      </td>
+                      <td className="px-4 py-3 text-center text-card-foreground">
+                        2.5%
+                      </td>
+                      <td className="px-4 py-3 text-center text-card-foreground">
+                        0%
+                      </td>
+                    </tr>
+                    <tr className="border-b border-border">
+                      <td className="px-4 py-3 text-card-foreground">
+                        Listing Prioritas
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <XCircle className="mx-auto h-5 w-5 text-muted-foreground" />
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <CheckCircle className="mx-auto h-5 w-5 text-emerald-500" />
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <CheckCircle className="mx-auto h-5 w-5 text-emerald-500" />
+                      </td>
+                    </tr>
+                    <tr className="border-b border-border">
+                      <td className="px-4 py-3 text-card-foreground">
+                        Badge Verified
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <XCircle className="mx-auto h-5 w-5 text-muted-foreground" />
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <CheckCircle className="mx-auto h-5 w-5 text-emerald-500" />
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <CheckCircle className="mx-auto h-5 w-5 text-emerald-500" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 text-card-foreground">
+                        Prioritas Support
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <XCircle className="mx-auto h-5 w-5 text-muted-foreground" />
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <XCircle className="mx-auto h-5 w-5 text-muted-foreground" />
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <CheckCircle className="mx-auto h-5 w-5 text-emerald-500" />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         )}
       </DashboardShell>

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Navbar } from "@/components/layout/navbar";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { StatusBadge } from "@/components/shared/status-badge";
@@ -8,6 +8,9 @@ import {
   useUserBookings,
   useNotifications,
   useTenantSurveys,
+  useIsLoggedIn,
+  useTrustedContact,
+  useTrustedContactNotifications,
 } from "@/lib/app-context";
 import {
   formatRupiah,
@@ -29,27 +32,48 @@ import {
   CheckCircle2,
   CalendarSearch,
   MapPin,
+  Heart,
+  Mail,
+  Phone,
+  Users,
+  Edit,
+  Trash2,
+  Save,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export default function TenantPageContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const tab = searchParams.get("tab") ?? "ringkasan";
   const { state, dispatch } = useApp();
+  const isLoggedIn = useIsLoggedIn();
   const bookings = useUserBookings();
-  const userPayments = state.payments.filter(
-    (p) => p.tenantId === state.currentUser.id,
-  );
-  const userServices = state.serviceRequests.filter(
-    (sr) => sr.tenantId === state.currentUser.id,
-  );
+  const userPayments = state.currentUser
+    ? state.payments.filter((p) => p.tenantId === state.currentUser.id)
+    : [];
+  const userServices = state.currentUser
+    ? state.serviceRequests.filter((sr) => sr.tenantId === state.currentUser.id)
+    : [];
   const notifications = useNotifications();
   const surveys = useTenantSurveys();
+  const trustedContact = useTrustedContact();
+  const trustedContactId = trustedContact?.id ?? "";
+  const trustedContactNotifs = useTrustedContactNotifications(trustedContactId);
 
   const [serviceType, setServiceType] = useState<ProviderType>("laundry");
   const [serviceDesc, setServiceDesc] = useState("");
   const [payingId, setPayingId] = useState<string | null>(null);
+
+  // Trusted contact editing
+  const [editingContact, setEditingContact] = useState(false);
+  const [tcName, setTcName] = useState(trustedContact?.name ?? "");
+  const [tcRelationship, setTcRelationship] = useState(
+    trustedContact?.relationship ?? "",
+  );
+  const [tcEmail, setTcEmail] = useState(trustedContact?.email ?? "");
+  const [tcPhone, setTcPhone] = useState(trustedContact?.phone ?? "");
 
   const pendingPayments = userPayments.filter(
     (p) => p.status === "belum_bayar" || p.status === "menunggu",
@@ -57,6 +81,35 @@ export default function TenantPageContent() {
   const activeBookings = bookings.filter(
     (b) => b.status === "aktif" || b.status === "menunggu",
   );
+
+  // Redirect if not logged in
+  useEffect(() => {
+    if (!isLoggedIn) {
+      toast.error("Login untuk mengakses dasbor");
+      router.push("/");
+    }
+  }, [isLoggedIn, router]);
+
+  // Sync trusted contact state
+  useEffect(() => {
+    if (trustedContact) {
+      setTcName(trustedContact.name);
+      setTcRelationship(trustedContact.relationship);
+      setTcEmail(trustedContact.email);
+      setTcPhone(trustedContact.phone);
+    }
+  }, [trustedContact]);
+
+  if (!isLoggedIn || !state.currentUser) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        <Navbar />
+        <div className="flex flex-1 items-center justify-center">
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   function handlePayment(paymentId: string) {
     setPayingId(paymentId);
@@ -72,7 +125,7 @@ export default function TenantPageContent() {
         type: "ADD_NOTIFICATION",
         notification: {
           id: `n-${Date.now()}`,
-          userId: state.currentUser.id,
+          userId: state.currentUser!.id,
           title: "Pembayaran Berhasil",
           message: `Pembayaran telah berhasil diproses.`,
           type: "payment",
@@ -80,6 +133,22 @@ export default function TenantPageContent() {
           createdAt: new Date().toISOString().split("T")[0],
         },
       });
+
+      // Simulate trusted contact notification
+      if (trustedContact) {
+        dispatch({
+          type: "ADD_TRUSTED_CONTACT_NOTIFICATION",
+          notification: {
+            id: `tcn-${Date.now()}`,
+            trustedContactId: trustedContact.id,
+            type: "payment_confirmed",
+            message: `Pembayaran sewa dari ${state.currentUser!.name} telah berhasil diproses.`,
+            sentAt: new Date().toLocaleString("id-ID"),
+            method: trustedContact.email ? "email" : "sms",
+          },
+        });
+      }
+
       toast.success("Pembayaran berhasil!");
       setPayingId(null);
     }, 1500);
@@ -105,7 +174,7 @@ export default function TenantPageContent() {
       type: "CREATE_SERVICE_REQUEST",
       request: {
         id: `sr-${Date.now()}`,
-        tenantId: state.currentUser.id,
+        tenantId: state.currentUser!.id,
         providerId: provider.id,
         propertyId: booking.propertyId,
         serviceType,
@@ -124,7 +193,7 @@ export default function TenantPageContent() {
         id: `n-${Date.now()}`,
         userId: provider.id,
         title: "Pekerjaan Baru",
-        message: `${state.currentUser.name} membutuhkan layanan ${serviceType}.`,
+        message: `${state.currentUser!.name} membutuhkan layanan ${serviceType}.`,
         type: "service",
         read: false,
         createdAt: new Date().toISOString().split("T")[0],
@@ -133,6 +202,59 @@ export default function TenantPageContent() {
 
     toast.success("Permintaan layanan berhasil dikirim!");
     setServiceDesc("");
+  }
+
+  function handleSaveTrustedContact() {
+    if (!tcName.trim()) {
+      toast.error("Masukkan nama kontak");
+      return;
+    }
+    if (!tcRelationship.trim()) {
+      toast.error("Pilih hubungan");
+      return;
+    }
+
+    if (trustedContact) {
+      dispatch({
+        type: "UPDATE_TRUSTED_CONTACT",
+        contact: {
+          id: trustedContact.id,
+          tenantId: state.currentUser!.id,
+          name: tcName.trim(),
+          relationship: tcRelationship.trim(),
+          email: tcEmail.trim(),
+          phone: tcPhone.trim(),
+          createdAt: trustedContact.createdAt,
+        },
+      });
+    } else {
+      dispatch({
+        type: "ADD_TRUSTED_CONTACT",
+        contact: {
+          id: `tc-${Date.now()}`,
+          tenantId: state.currentUser!.id,
+          name: tcName.trim(),
+          relationship: tcRelationship.trim(),
+          email: tcEmail.trim(),
+          phone: tcPhone.trim(),
+          createdAt: new Date().toISOString().split("T")[0],
+        },
+      });
+    }
+
+    toast.success("Kontak terpercaya berhasil disimpan!");
+    setEditingContact(false);
+  }
+
+  function handleDeleteTrustedContact() {
+    if (!trustedContact) return;
+    dispatch({ type: "DELETE_TRUSTED_CONTACT", contactId: trustedContact.id });
+    setTcName("");
+    setTcRelationship("");
+    setTcEmail("");
+    setTcPhone("");
+    toast.info("Kontak terpercaya dihapus");
+    setEditingContact(false);
   }
 
   function getDaysUntilDue(dueDate: string) {
@@ -156,6 +278,7 @@ export default function TenantPageContent() {
             "layanan",
             "notifikasi",
             "survey",
+            "kontak",
           ].includes(tab)) && (
           <div className="flex flex-col gap-6">
             <div>
@@ -313,6 +436,48 @@ export default function TenantPageContent() {
               </div>
             )}
 
+            {/* Trusted contact summary */}
+            <div className="rounded-xl border border-border bg-card p-6">
+              <h2 className="mb-4 font-semibold text-card-foreground flex items-center gap-2">
+                <Heart className="h-5 w-5 text-pink-500" /> Kontak Terpercaya
+              </h2>
+              {trustedContact ? (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-900/30">
+                      <Users className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-card-foreground">
+                        {trustedContact.name}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {trustedContact.relationship}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => router.push("?tab=kontak")}
+                    className="text-sm text-primary hover:underline"
+                  >
+                    Kelola
+                  </button>
+                </div>
+              ) : (
+                <div className="text-center py-4">
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Belum ada kontak terpercaya
+                  </p>
+                  <button
+                    onClick={() => router.push("?tab=kontak")}
+                    className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+                  >
+                    Tambahkan
+                  </button>
+                </div>
+              )}
+            </div>
+
             {/* Recent surveys */}
             {surveys.length > 0 && (
               <div className="rounded-xl border border-border bg-card p-6">
@@ -414,6 +579,14 @@ export default function TenantPageContent() {
                           </p>
                         </div>
                       </div>
+                      {b.trustedContactId && (
+                        <div className="mt-4 flex items-center gap-2 rounded-lg bg-pink-50 px-3 py-2 dark:bg-pink-900/20">
+                          <Heart className="h-4 w-4 text-pink-500" />
+                          <span className="text-sm text-pink-700 dark:text-pink-300">
+                            Kontak terpercaya akan dinotifikasi
+                          </span>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -575,6 +748,185 @@ export default function TenantPageContent() {
           </div>
         )}
 
+        {/* Trusted Contact tab */}
+        {tab === "kontak" && (
+          <div className="flex flex-col gap-6">
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">
+                Kontak Terpercaya
+              </h1>
+              <p className="text-muted-foreground">
+                Kelola kontak orang tua/wali untuk menerima notifikasi
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-border bg-card p-6">
+              {trustedContact && !editingContact ? (
+                <div>
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-900/30">
+                        <Users className="h-6 w-6 text-pink-600 dark:text-pink-400" />
+                      </div>
+                      <div>
+                        <p className="text-lg font-medium text-card-foreground">
+                          {trustedContact.name}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {trustedContact.relationship}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setEditingContact(true)}
+                        className="rounded-lg border border-border p-2 text-muted-foreground hover:bg-accent"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={handleDeleteTrustedContact}
+                        className="rounded-lg border border-red-200 p-2 text-red-500 hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-900/20"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2 text-sm">
+                    {trustedContact.email && (
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Mail className="h-4 w-4" /> {trustedContact.email}
+                      </div>
+                    )}
+                    {trustedContact.phone && (
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Phone className="h-4 w-4" /> {trustedContact.phone}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Notification history */}
+                  {trustedContactNotifs.length > 0 && (
+                    <div className="mt-6 border-t border-border pt-4">
+                      <h3 className="font-medium text-card-foreground mb-3">
+                        Riwayat Notifikasi Terkirim
+                      </h3>
+                      <div className="flex flex-col gap-2">
+                        {trustedContactNotifs.map((tcn) => (
+                          <div
+                            key={tcn.id}
+                            className="rounded-lg bg-secondary/50 p-3 text-sm"
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="font-medium text-card-foreground capitalize">
+                                {tcn.type.replace(/_/g, " ")}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {tcn.sentAt}
+                              </span>
+                            </div>
+                            <p className="text-muted-foreground mt-1">
+                              {tcn.message}
+                            </p>
+                            <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
+                              {tcn.method === "email" ? (
+                                <Mail className="h-3 w-3" />
+                              ) : (
+                                <Phone className="h-3 w-3" />
+                              )}
+                              Simulasi {tcn.method} terkirim
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4">
+                  <h3 className="font-semibold text-card-foreground">
+                    {trustedContact
+                      ? "Edit Kontak Terpercaya"
+                      : "Tambah Kontak Terpercaya"}
+                  </h3>
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium text-foreground">
+                      Nama Lengkap
+                    </label>
+                    <input
+                      type="text"
+                      value={tcName}
+                      onChange={(e) => setTcName(e.target.value)}
+                      placeholder="Nama orang tua/wali"
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium text-foreground">
+                      Hubungan
+                    </label>
+                    <select
+                      value={tcRelationship}
+                      onChange={(e) => setTcRelationship(e.target.value)}
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                    >
+                      <option value="">Pilih hubungan</option>
+                      <option value="Ibu">Ibu</option>
+                      <option value="Ayah">Ayah</option>
+                      <option value="Wali">Wali</option>
+                      <option value="Kakak">Kakak</option>
+                      <option value="Adik">Adik</option>
+                      <option value="Paman">Paman</option>
+                      <option value="Bibi">Bibi</option>
+                      <option value="Lainnya">Lainnya</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium text-foreground">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      value={tcEmail}
+                      onChange={(e) => setTcEmail(e.target.value)}
+                      placeholder="email@contoh.com"
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium text-foreground">
+                      No. Telepon
+                    </label>
+                    <input
+                      type="tel"
+                      value={tcPhone}
+                      onChange={(e) => setTcPhone(e.target.value)}
+                      placeholder="08xxxxxxxxxx"
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleSaveTrustedContact}
+                      className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+                    >
+                      <Save className="h-4 w-4" /> Simpan
+                    </button>
+                    {editingContact && (
+                      <button
+                        onClick={() => setEditingContact(false)}
+                        className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-accent"
+                      >
+                        Batal
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Services tab */}
         {tab === "layanan" && (
           <div className="flex flex-col gap-6">
@@ -674,7 +1026,7 @@ export default function TenantPageContent() {
                   onClick={() =>
                     dispatch({
                       type: "MARK_ALL_NOTIFICATIONS_READ",
-                      userId: state.currentUser.id,
+                      userId: state.currentUser!.id,
                     })
                   }
                   className="text-sm text-primary hover:underline"

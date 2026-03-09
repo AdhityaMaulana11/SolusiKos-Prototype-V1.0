@@ -4,12 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useState, useRef, useEffect } from "react";
-import { useApp, useUnreadCount, getRolePath } from "@/lib/app-context";
+import {
+  useApp,
+  useUnreadCount,
+  getRolePath,
+  useIsLoggedIn,
+} from "@/lib/app-context";
 import { users } from "@/lib/mock-data";
 import {
   Home,
   Search,
-  User,
   Bell,
   Sun,
   Moon,
@@ -21,13 +25,14 @@ import {
   LayoutDashboard,
   MessageCircle,
   Send,
+  LogIn,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 export function Navbar() {
   const { state, dispatch } = useApp();
-  const { currentUser } = state;
+  const { currentUser, isLoggedIn } = state;
   const unreadCount = useUnreadCount();
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
@@ -36,14 +41,18 @@ export function Navbar() {
   const [notifOpen, setNotifOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMsg, setChatMsg] = useState("");
+  const [roleTransition, setRoleTransition] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   const isDashboard =
     pathname.startsWith("/dasbor") || pathname.startsWith("/admin");
 
-  const userNotifs = state.notifications
-    .filter((n) => n.userId === currentUser.id)
-    .slice(0, 5);
+  const userNotifs =
+    isLoggedIn && currentUser
+      ? state.notifications
+          .filter((n) => n.userId === currentUser.id)
+          .slice(0, 5)
+      : [];
 
   const navLinks = [
     { href: "/", label: "Beranda", icon: Home },
@@ -71,8 +80,35 @@ export function Navbar() {
     }
   }, [chatOpen, state.chatMessages]);
 
+  function handleLogout() {
+    setRoleTransition(true);
+    setTimeout(() => {
+      dispatch({ type: "LOGOUT" });
+      setUserMenuOpen(false);
+      toast.info("Logout berhasil");
+      setRoleTransition(false);
+    }, 300);
+  }
+
+  function handleSwitchUser(userId: string) {
+    setRoleTransition(true);
+    setTimeout(() => {
+      dispatch({ type: "SWITCH_USER", userId });
+      setUserMenuOpen(false);
+      const user = users.find((u) => u.id === userId);
+      toast.success(`Beralih ke ${user?.name}`);
+      setRoleTransition(false);
+    }, 300);
+  }
+
   function handleSendChat() {
     if (!chatMsg.trim()) return;
+    if (!isLoggedIn || !currentUser) {
+      toast.error("Login untuk mengirim pesan");
+      setLoginModalOpen(true);
+      setChatOpen(false);
+      return;
+    }
     dispatch({
       type: "ADD_CHAT_MESSAGE",
       message: {
@@ -136,31 +172,36 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href={getRolePath(currentUser.role)}
-              className={cn(
-                "rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
-                isDashboard
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground",
-              )}
-            >
-              Dasboard
-            </Link>
+            {isLoggedIn && currentUser && (
+              <Link
+                href={getRolePath(currentUser.role)}
+                className={cn(
+                  "rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
+                  isDashboard
+                    ? "bg-accent text-accent-foreground"
+                    : "text-muted-foreground",
+                )}
+              >
+                Dasbor
+              </Link>
+            )}
           </nav>
 
           {/* Right side actions */}
           <div className="flex items-center gap-1.5">
-            {/* Role badge */}
-            <div
-              className={cn(
-                "hidden items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold text-white sm:flex transition-all",
-                roleColors[currentUser.role],
-              )}
-            >
-              <div className="h-1.5 w-1.5 rounded-full bg-white/70 animate-pulse" />
-              {roleLabels[currentUser.role]}
-            </div>
+            {/* Role badge with animation */}
+            {isLoggedIn && currentUser && (
+              <div
+                className={cn(
+                  "hidden items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold text-white sm:flex transition-all duration-300",
+                  roleColors[currentUser.role],
+                  roleTransition && "scale-110 opacity-50",
+                )}
+              >
+                <div className="h-1.5 w-1.5 rounded-full bg-white/70 animate-pulse" />
+                {roleLabels[currentUser.role]}
+              </div>
+            )}
 
             {/* Chat with admin */}
             <button
@@ -187,177 +228,194 @@ export function Navbar() {
               )}
             </button>
 
-            {/* Notifications */}
-            <div className="relative">
-              <button
-                onClick={() => {
-                  setNotifOpen(!notifOpen);
-                  setUserMenuOpen(false);
-                }}
-                className="relative rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-                aria-label="Notifikasi"
-              >
-                <Bell className="h-5 w-5" />
-                {unreadCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground animate-bounce">
-                    {unreadCount > 9 ? "9+" : unreadCount}
-                  </span>
-                )}
-              </button>
-              {notifOpen && (
-                <div className="absolute right-0 top-full mt-2 w-80 rounded-lg border border-border bg-card shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="flex items-center justify-between border-b border-border p-3">
-                    <h3 className="font-semibold text-card-foreground">
-                      Notifikasi
-                    </h3>
-                    {unreadCount > 0 && (
-                      <button
-                        onClick={() =>
-                          dispatch({
-                            type: "MARK_ALL_NOTIFICATIONS_READ",
-                            userId: currentUser.id,
-                          })
-                        }
-                        className="text-xs text-primary hover:underline"
-                      >
-                        Tandai semua dibaca
-                      </button>
-                    )}
-                  </div>
-                  <div className="max-h-72 overflow-y-auto">
-                    {userNotifs.length === 0 ? (
-                      <p className="p-4 text-center text-sm text-muted-foreground">
-                        Tidak ada notifikasi
-                      </p>
-                    ) : (
-                      userNotifs.map((n) => (
+            {/* Notifications - only show when logged in */}
+            {isLoggedIn && currentUser && (
+              <div className="relative">
+                <button
+                  onClick={() => {
+                    setNotifOpen(!notifOpen);
+                    setUserMenuOpen(false);
+                  }}
+                  className="relative rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                  aria-label="Notifikasi"
+                >
+                  <Bell className="h-5 w-5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground animate-bounce">
+                      {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                  )}
+                </button>
+                {notifOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-80 rounded-lg border border-border bg-card shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="flex items-center justify-between border-b border-border p-3">
+                      <h3 className="font-semibold text-card-foreground">
+                        Notifikasi
+                      </h3>
+                      {unreadCount > 0 && (
                         <button
-                          key={n.id}
                           onClick={() =>
                             dispatch({
-                              type: "MARK_NOTIFICATION_READ",
-                              notificationId: n.id,
+                              type: "MARK_ALL_NOTIFICATIONS_READ",
+                              userId: currentUser.id,
                             })
                           }
-                          className={cn(
-                            "flex w-full flex-col gap-0.5 border-b border-border p-3 text-left transition-colors hover:bg-accent/50",
-                            !n.read && "bg-primary/5",
-                          )}
+                          className="text-xs text-primary hover:underline"
                         >
-                          <div className="flex items-center gap-2">
-                            {!n.read && (
-                              <div className="h-2 w-2 shrink-0 rounded-full bg-primary animate-pulse" />
+                          Tandai semua dibaca
+                        </button>
+                      )}
+                    </div>
+                    <div className="max-h-72 overflow-y-auto">
+                      {userNotifs.length === 0 ? (
+                        <p className="p-4 text-center text-sm text-muted-foreground">
+                          Tidak ada notifikasi
+                        </p>
+                      ) : (
+                        userNotifs.map((n) => (
+                          <button
+                            key={n.id}
+                            onClick={() =>
+                              dispatch({
+                                type: "MARK_NOTIFICATION_READ",
+                                notificationId: n.id,
+                              })
+                            }
+                            className={cn(
+                              "flex w-full flex-col gap-0.5 border-b border-border p-3 text-left transition-colors hover:bg-accent/50",
+                              !n.read && "bg-primary/5",
                             )}
-                            <span className="text-sm font-medium text-card-foreground">
-                              {n.title}
+                          >
+                            <div className="flex items-center gap-2">
+                              {!n.read && (
+                                <div className="h-2 w-2 shrink-0 rounded-full bg-primary animate-pulse" />
+                              )}
+                              <span className="text-sm font-medium text-card-foreground">
+                                {n.title}
+                              </span>
+                            </div>
+                            <span className="text-xs text-muted-foreground line-clamp-2">
+                              {n.message}
                             </span>
-                          </div>
-                          <span className="text-xs text-muted-foreground line-clamp-2">
-                            {n.message}
-                          </span>
-                        </button>
-                      ))
-                    )}
-                  </div>
-                  <Link
-                    href="/pengaturan"
-                    onClick={() => setNotifOpen(false)}
-                    className="block border-t border-border p-2 text-center text-xs text-primary hover:underline"
-                  >
-                    Lihat semua
-                  </Link>
-                </div>
-              )}
-            </div>
-
-            {/* User / Role Switcher */}
-            <div className="relative">
-              <button
-                onClick={() => {
-                  setUserMenuOpen(!userMenuOpen);
-                  setNotifOpen(false);
-                }}
-                className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-accent"
-              >
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                  {currentUser.avatar}
-                </div>
-                <span className="hidden text-foreground sm:inline">
-                  {currentUser.name.split(" ")[0]}
-                </span>
-                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-              </button>
-              {userMenuOpen && (
-                <div className="absolute right-0 top-full mt-2 w-64 rounded-lg border border-border bg-card shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="border-b border-border p-3">
-                    <p className="text-sm font-semibold text-card-foreground">
-                      {currentUser.name}
-                    </p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span
-                        className={cn(
-                          "inline-flex h-2 w-2 rounded-full",
-                          roleColors[currentUser.role],
-                        )}
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        {roleLabels[currentUser.role]}
-                      </p>
+                          </button>
+                        ))
+                      )}
                     </div>
-                  </div>
-                  <div className="border-b border-border p-2">
-                    <p className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      Ganti Peran (Demo)
-                    </p>
-                    <div className="max-h-48 overflow-y-auto">
-                      {users.map((u) => (
-                        <button
-                          key={u.id}
-                          onClick={() => {
-                            dispatch({ type: "SWITCH_USER", userId: u.id });
-                            setUserMenuOpen(false);
-                            toast.success(`Beralih ke ${u.name}`);
-                          }}
-                          className={cn(
-                            "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-accent",
-                            u.id === currentUser.id && "bg-accent",
-                          )}
-                        >
-                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-[10px] font-bold text-muted-foreground">
-                            {u.avatar}
-                          </div>
-                          <div className="flex flex-col items-start">
-                            <span className="text-card-foreground">
-                              {u.name}
-                            </span>
-                            <span className="text-[10px] text-muted-foreground">
-                              {roleLabels[u.role]}
-                              {u.providerType ? ` (${u.providerType})` : ""}
-                            </span>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="p-2">
-                    <Link
-                      href={getRolePath(currentUser.role)}
-                      onClick={() => setUserMenuOpen(false)}
-                      className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-card-foreground transition-colors hover:bg-accent"
-                    >
-                      <LayoutDashboard className="h-4 w-4" /> Dasbor
-                    </Link>
                     <Link
                       href="/pengaturan"
-                      onClick={() => setUserMenuOpen(false)}
-                      className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-card-foreground transition-colors hover:bg-accent"
+                      onClick={() => setNotifOpen(false)}
+                      className="block border-t border-border p-2 text-center text-xs text-primary hover:underline"
                     >
-                      <Settings className="h-4 w-4" /> Pengaturan
+                      Lihat semua
                     </Link>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
+
+            {/* Login / User Menu */}
+            {isLoggedIn && currentUser ? (
+              <div className="relative">
+                <button
+                  onClick={() => {
+                    setUserMenuOpen(!userMenuOpen);
+                    setNotifOpen(false);
+                  }}
+                  className={cn(
+                    "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-all hover:bg-accent",
+                    roleTransition && "opacity-50",
+                  )}
+                >
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                    {currentUser.avatar}
+                  </div>
+                  <span className="hidden text-foreground sm:inline">
+                    {currentUser.name.split(" ")[0]}
+                  </span>
+                  <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                </button>
+                {userMenuOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-64 rounded-lg border border-border bg-card shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="border-b border-border p-3">
+                      <p className="text-sm font-semibold text-card-foreground">
+                        {currentUser.name}
+                      </p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span
+                          className={cn(
+                            "inline-flex h-2 w-2 rounded-full",
+                            roleColors[currentUser.role],
+                          )}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          {roleLabels[currentUser.role]}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="border-b border-border p-2">
+                      <p className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        Ganti Peran (Demo)
+                      </p>
+                      <div className="max-h-48 overflow-y-auto">
+                        {users.map((u) => (
+                          <button
+                            key={u.id}
+                            onClick={() => handleSwitchUser(u.id)}
+                            className={cn(
+                              "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-accent",
+                              u.id === currentUser.id && "bg-accent",
+                            )}
+                          >
+                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-[10px] font-bold text-muted-foreground">
+                              {u.avatar}
+                            </div>
+                            <div className="flex flex-col items-start">
+                              <span className="text-card-foreground">
+                                {u.name}
+                              </span>
+                              <span className="text-[10px] text-muted-foreground">
+                                {roleLabels[u.role]}
+                                {u.providerType ? ` (${u.providerType})` : ""}
+                              </span>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="p-2">
+                      <Link
+                        href={getRolePath(currentUser.role)}
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-card-foreground transition-colors hover:bg-accent"
+                      >
+                        <LayoutDashboard className="h-4 w-4" /> Dasbor
+                      </Link>
+                      <Link
+                        href="/pengaturan"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-card-foreground transition-colors hover:bg-accent"
+                      >
+                        <Settings className="h-4 w-4" /> Pengaturan
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-destructive transition-colors hover:bg-destructive/10"
+                      >
+                        <LogOut className="h-4 w-4" /> Logout
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                href="/masuk"
+                className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-95"
+              >
+                <LogIn className="h-4 w-4" />
+                <span className="hidden sm:inline">Masuk</span>
+              </Link>
+            )}
 
             {/* Mobile hamburger */}
             <button
@@ -393,13 +451,24 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              <Link
-                href={getRolePath(currentUser.role)}
-                onClick={() => setMobileOpen(false)}
-                className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent"
-              >
-                Dasboard
-              </Link>
+              {isLoggedIn && currentUser && (
+                <Link
+                  href={getRolePath(currentUser.role)}
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent"
+                >
+                  Dasbor
+                </Link>
+              )}
+              {!isLoggedIn && (
+                <Link
+                  href="/masuk"
+                  onClick={() => setMobileOpen(false)}
+                  className="mt-2 block rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground text-center"
+                >
+                  Masuk
+                </Link>
+              )}
             </nav>
           </div>
         )}
@@ -428,54 +497,72 @@ export function Navbar() {
             </button>
           </div>
           <div className="h-72 overflow-y-auto p-3 flex flex-col gap-2">
-            {state.chatMessages.map((msg) => (
-              <div
-                key={msg.id}
-                className={cn(
-                  "max-w-[80%] rounded-xl px-3 py-2 text-sm",
-                  msg.isAdmin
-                    ? "self-start bg-secondary text-secondary-foreground"
-                    : "self-end bg-primary text-primary-foreground",
-                )}
-              >
-                <p>{msg.message}</p>
-                <p
+            {!isLoggedIn && (
+              <div className="flex flex-col items-center justify-center h-full text-center p-4">
+                <MessageCircle className="h-10 w-10 text-muted-foreground/30 mb-2" />
+                <p className="text-sm text-muted-foreground">
+                  Login untuk memulai percakapan
+                </p>
+                <Link
+                  href="/masuk"
+                  onClick={() => setChatOpen(false)}
+                  className="mt-3 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+                >
+                  Masuk
+                </Link>
+              </div>
+            )}
+            {isLoggedIn &&
+              state.chatMessages.map((msg) => (
+                <div
+                  key={msg.id}
                   className={cn(
-                    "mt-0.5 text-[10px]",
+                    "max-w-[80%] rounded-xl px-3 py-2 text-sm",
                     msg.isAdmin
-                      ? "text-muted-foreground"
-                      : "text-primary-foreground/60",
+                      ? "self-start bg-secondary text-secondary-foreground"
+                      : "self-end bg-primary text-primary-foreground",
                   )}
                 >
-                  {msg.timestamp}
-                </p>
-              </div>
-            ))}
+                  <p>{msg.message}</p>
+                  <p
+                    className={cn(
+                      "mt-0.5 text-[10px]",
+                      msg.isAdmin
+                        ? "text-muted-foreground"
+                        : "text-primary-foreground/60",
+                    )}
+                  >
+                    {msg.timestamp}
+                  </p>
+                </div>
+              ))}
             <div ref={chatEndRef} />
           </div>
-          <div className="border-t border-border p-3">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSendChat();
-              }}
-              className="flex items-center gap-2"
-            >
-              <input
-                type="text"
-                value={chatMsg}
-                onChange={(e) => setChatMsg(e.target.value)}
-                placeholder="Ketik pesan..."
-                className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-              />
-              <button
-                type="submit"
-                className="rounded-lg bg-primary p-2 text-primary-foreground hover:bg-primary/90 transition-colors"
+          {isLoggedIn && (
+            <div className="border-t border-border p-3">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSendChat();
+                }}
+                className="flex items-center gap-2"
               >
-                <Send className="h-4 w-4" />
-              </button>
-            </form>
-          </div>
+                <input
+                  type="text"
+                  value={chatMsg}
+                  onChange={(e) => setChatMsg(e.target.value)}
+                  placeholder="Ketik pesan..."
+                  className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+                <button
+                  type="submit"
+                  className="rounded-lg bg-primary p-2 text-primary-foreground hover:bg-primary/90 transition-colors"
+                >
+                  <Send className="h-4 w-4" />
+                </button>
+              </form>
+            </div>
+          )}
         </div>
       )}
     </>
