@@ -1227,7 +1227,7 @@ export const membershipPlans: MembershipPlan[] = [
   {
     tier: "perak",
     name: "Perak",
-    price: 99000,
+    price: 200000,
     features: [
       "Listing prioritas (maks. 10 properti)",
       "Video Room Tour di listing",
@@ -1248,7 +1248,7 @@ export const membershipPlans: MembershipPlan[] = [
   {
     tier: "emas",
     name: "Emas",
-    price: 199000,
+    price: 300000,
     features: [
       "Listing tak terbatas",
       "Video + 360° Room Tour",
