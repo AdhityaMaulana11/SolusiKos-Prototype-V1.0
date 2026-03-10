@@ -196,13 +196,31 @@ export const properties: Property[] = [
     address: "Jl. Siliwangi No. 45, Kuningan",
     description:
       "Kos nyaman di pusat kota Kuningan, dekat dengan kampus dan pusat perbelanjaan. Fasilitas lengkap dengan WiFi cepat dan dapur bersama.",
-    images: ["/images/kos1/prop1.jpeg"],
+    images: ["/images/kos1/tampak-depan.jpeg"],
     media: {
       photos: [
         {
           id: "photo-1-1",
-          url: "/images/kos1/prop1.jpeg",
+          url: "/images/kos1/tampak-depan.jpeg",
+          caption: "Tampak Depan",
+          isPrimary: true,
+        },
+        {
+          id: "photo-1-2",
+          url: "/images/kos1/kamar.jpeg",
           caption: "Kamar Tidur",
+          isPrimary: true,
+        },
+        {
+          id: "photo-1-3",
+          url: "/images/kos1/kamarmandi.jpeg",
+          caption: "Kamar Mandi",
+          isPrimary: true,
+        },
+        {
+          id: "photo-1-4",
+          url: "/images/kos1/area-parkir.jpeg",
+          caption: "Area Parkir",
           isPrimary: true,
         },
       ],
