@@ -196,45 +196,24 @@ export const properties: Property[] = [
     address: "Jl. Siliwangi No. 45, Kuningan",
     description:
       "Kos nyaman di pusat kota Kuningan, dekat dengan kampus dan pusat perbelanjaan. Fasilitas lengkap dengan WiFi cepat dan dapur bersama.",
-    images: ["/placeholder-kos-1.jpg"],
-    // TODO: Replace with real media assets
+    images: ["/images/kos1/prop1.jpeg"],
     media: {
       photos: [
         {
           id: "photo-1-1",
-          url: "/images/kos/prop-1/photo-1.jpg",
-          caption: "Tampak Depan",
-          isPrimary: true,
-        },
-        {
-          id: "photo-1-2",
-          url: "/images/kos/prop-1/photo-2.jpg",
+          url: "/images/kos1/prop1.jpeg",
           caption: "Kamar Tidur",
-        },
-        {
-          id: "photo-1-3",
-          url: "/images/kos/prop-1/photo-3.jpg",
-          caption: "Kamar Mandi",
-        },
-        {
-          id: "photo-1-4",
-          url: "/images/kos/prop-1/photo-4.jpg",
-          caption: "Dapur Bersama",
-        },
-        {
-          id: "photo-1-5",
-          url: "/images/kos/prop-1/photo-5.jpg",
-          caption: "Area Parkir",
+          isPrimary: true,
         },
       ],
       videoTour: {
         url: "/videos/kos/prop-1/tour.mp4",
-        thumbnail: "/images/kos/prop-1/video-thumb.jpg",
+        thumbnail: "/images/kos1/prop1.jpeg",
         duration: "2:30",
       },
       tour360: {
         url: "/360/kos/prop-1/tour.html",
-        thumbnail: "/images/kos/prop-1/360-thumb.jpg",
+        thumbnail: "/360/kos1/prop1-360.jpeg",
       },
     },
     amenities: [
@@ -273,39 +252,24 @@ export const properties: Property[] = [
     address: "Jl. Veteran No. 12, Kuningan",
     description:
       "Kos khusus putri dengan lingkungan aman dan bersih. Tersedia penjaga 24 jam dan CCTV.",
-    images: ["/placeholder-kos-2.jpg"],
+    images: ["/images/kos1/prop1.jpeg"],
     media: {
       photos: [
         {
           id: "photo-2-1",
-          url: "/images/kos/prop-2/photo-1.jpg",
-          caption: "Tampak Depan",
-          isPrimary: true,
-        },
-        {
-          id: "photo-2-2",
-          url: "/images/kos/prop-2/photo-2.jpg",
+          url: "/images/kos1/prop1.jpeg",
           caption: "Kamar Tidur",
-        },
-        {
-          id: "photo-2-3",
-          url: "/images/kos/prop-2/photo-3.jpg",
-          caption: "Kamar Mandi",
-        },
-        {
-          id: "photo-2-4",
-          url: "/images/kos/prop-2/photo-4.jpg",
-          caption: "Area CCTV",
+          isPrimary: true,
         },
       ],
       videoTour: {
         url: "/videos/kos/prop-2/tour.mp4",
-        thumbnail: "/images/kos/prop-2/video-thumb.jpg",
+        thumbnail: "/images/kos1/prop1.jpeg",
         duration: "2:15",
       },
       tour360: {
         url: "/360/kos/prop-2/tour.html",
-        thumbnail: "/images/kos/prop-2/360-thumb.jpg",
+        thumbnail: "/images/prop1-360.jpeg",
       },
     },
     amenities: [
@@ -343,7 +307,22 @@ export const properties: Property[] = [
     address: "Jl. Ahmad Yani No. 78, Kuningan",
     description:
       "Kos khusus putra dengan fasilitas olahraga dan ruang komunal yang luas.",
-    images: ["/placeholder-kos-3.jpg"],
+    images: ["/images/kos1/prop1.jpeg"],
+    media: {
+      photos: [
+        {
+          id: "photo-3-1",
+          url: "/images/kos1/prop1.jpeg",
+          caption: "Kamar Tidur",
+          isPrimary: true,
+        },
+      ],
+      videoTour: {
+        url: "/videos/kos/prop-3/tour.mp4",
+        thumbnail: "/images/kos1/prop1.jpeg",
+        duration: "2:00",
+      },
+    },
     amenities: [
       "WiFi",
       "Kipas Angin",
@@ -373,7 +352,22 @@ export const properties: Property[] = [
     address: "Jl. Merdeka No. 33, Sumber, Kab. Cirebon",
     description:
       "Kos modern minimalis dengan desain interior yang stylish, cocok untuk profesional muda.",
-    images: ["/placeholder-kos-4.jpg"],
+    images: ["/images/kos1/prop1.jpeg"],
+    media: {
+      photos: [
+        {
+          id: "photo-4-1",
+          url: "/images/kos1/prop1.jpeg",
+          caption: "Kamar Tidur",
+          isPrimary: true,
+        },
+      ],
+      videoTour: {
+        url: "/videos/kos/prop-4/tour.mp4",
+        thumbnail: "/images/kos1/prop1.jpeg",
+        duration: "1:45",
+      },
+    },
     amenities: [
       "WiFi",
       "AC",
@@ -404,7 +398,26 @@ export const properties: Property[] = [
     address: "Jl. Kartini No. 56, Kota Cirebon",
     description:
       "Kos strategis di pusat Kota Cirebon, dekat stasiun kereta dan alun-alun. Cocok untuk mahasiswa dan pekerja.",
-    images: ["/placeholder-kos-5.jpg"],
+    images: ["/images/kos1/prop1.jpeg"],
+    media: {
+      photos: [
+        {
+          id: "photo-5-1",
+          url: "/images/kos1/prop1.jpeg",
+          caption: "Kamar Tidur",
+          isPrimary: true,
+        },
+      ],
+      videoTour: {
+        url: "/videos/kos/prop-5/tour.mp4",
+        thumbnail: "/images/kos1/prop1.jpeg",
+        duration: "2:20",
+      },
+      tour360: {
+        url: "/360/kos/prop-5/tour.html",
+        thumbnail: "/images/prop1-360.jpeg",
+      },
+    },
     amenities: [
       "WiFi",
       "AC",
@@ -434,7 +447,17 @@ export const properties: Property[] = [
     region: "kota-cirebon",
     address: "Jl. Pilsauddin No. 21, Kota Cirebon",
     description: "Kos putri elegan dengan taman yang indah dan suasana tenang.",
-    images: ["/placeholder-kos-6.jpg"],
+    images: ["/images/kos1/prop1.jpeg"],
+    media: {
+      photos: [
+        {
+          id: "photo-6-1",
+          url: "/images/kos1/prop1.jpeg",
+          caption: "Kamar Tidur",
+          isPrimary: true,
+        },
+      ],
+    },
     amenities: [
       "WiFi",
       "AC",
@@ -465,7 +488,26 @@ export const properties: Property[] = [
     address: "Jl. Tuparev No. 88, Kota Cirebon",
     description:
       "Kos premium dengan pemandangan Gunung Ciremai. Fasilitas hotel bintang 3.",
-    images: ["/placeholder-kos-7.jpg"],
+    images: ["/images/kos1/prop1.jpeg"],
+    media: {
+      photos: [
+        {
+          id: "photo-7-1",
+          url: "/images/kos1/prop1.jpeg",
+          caption: "Kamar Tidur",
+          isPrimary: true,
+        },
+      ],
+      videoTour: {
+        url: "/videos/kos/prop-7/tour.mp4",
+        thumbnail: "/images/kos1/prop1.jpeg",
+        duration: "3:00",
+      },
+      tour360: {
+        url: "/360/kos/prop-7/tour.html",
+        thumbnail: "/images/prop1-360.jpeg",
+      },
+    },
     amenities: [
       "WiFi",
       "AC",
@@ -497,7 +539,17 @@ export const properties: Property[] = [
     address: "Jl. Raya Tonjong No. 15, Majalengka",
     description:
       "Kos murah dan bersih di Majalengka, ideal untuk pekerja pabrik dan mahasiswa.",
-    images: ["/placeholder-kos-8.jpg"],
+    images: ["/images/kos1/prop1.jpeg"],
+    media: {
+      photos: [
+        {
+          id: "photo-8-1",
+          url: "/images/kos1/prop1.jpeg",
+          caption: "Kamar Tidur",
+          isPrimary: true,
+        },
+      ],
+    },
     amenities: ["WiFi", "Kipas Angin", "Kamar Mandi Luar", "Parkir Motor"],
     pricePerMonth: 600000,
     pricePerWeek: 200000,
@@ -521,7 +573,22 @@ export const properties: Property[] = [
     address: "Jl. Bandara BIJB No. 5, Majalengka",
     description:
       "Kos modern dekat Bandara Kertajati, cocok untuk pekerja bandara dan wisatawan transit.",
-    images: ["/placeholder-kos-9.jpg"],
+    images: ["/images/kos1/prop1.jpeg"],
+    media: {
+      photos: [
+        {
+          id: "photo-9-1",
+          url: "/images/kos1/prop1.jpeg",
+          caption: "Kamar Tidur",
+          isPrimary: true,
+        },
+      ],
+      videoTour: {
+        url: "/videos/kos/prop-9/tour.mp4",
+        thumbnail: "/images/kos1/prop1.jpeg",
+        duration: "2:10",
+      },
+    },
     amenities: [
       "WiFi",
       "AC",
@@ -552,7 +619,17 @@ export const properties: Property[] = [
     address: "Jl. Siti Armilah No. 30, Plered, Kab. Cirebon",
     description:
       "Kos keluarga dengan suasana homey dan dapur lengkap. Dekat pasar tradisional.",
-    images: ["/placeholder-kos-10.jpg"],
+    images: ["/images/kos1/prop1.jpeg"],
+    media: {
+      photos: [
+        {
+          id: "photo-10-1",
+          url: "/images/kos1/prop1.jpeg",
+          caption: "Kamar Tidur",
+          isPrimary: true,
+        },
+      ],
+    },
     amenities: [
       "WiFi",
       "Kipas Angin",
@@ -583,7 +660,17 @@ export const properties: Property[] = [
     address: "Jl. Raya Pabean No. 10, Indramayu",
     description:
       "Kos bersih dan terjangkau di pusat Kota Indramayu, dekat kawasan industri dan pelabuhan.",
-    images: ["/placeholder-kos-11.jpg"],
+    images: ["/images/kos1/prop1.jpeg"],
+    media: {
+      photos: [
+        {
+          id: "photo-11-1",
+          url: "/images/kos1/prop1.jpeg",
+          caption: "Kamar Tidur",
+          isPrimary: true,
+        },
+      ],
+    },
     amenities: [
       "WiFi",
       "Kipas Angin",
