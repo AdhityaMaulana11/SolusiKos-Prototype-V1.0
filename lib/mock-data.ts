@@ -225,9 +225,9 @@ export const properties: Property[] = [
         },
       ],
       videoTour: {
-        url: "/videos/kos/prop-1/tour.mp4",
-        thumbnail: "/images/kos1/prop1.jpeg",
-        duration: "2:30",
+        url: "/videos/kos1/tour.mp4",
+        thumbnail: "/images/kos1/tampak-depan.jpeg",
+        duration: "1:05",
       },
       tour360: {
         url: "/360/kos/prop-1/tour.html",
