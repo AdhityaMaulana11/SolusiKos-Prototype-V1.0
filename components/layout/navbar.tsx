@@ -484,7 +484,7 @@ export function Navbar() {
               </div>
               <div>
                 <p className="text-sm font-semibold text-primary-foreground">
-                  Admin Domira
+                  Si Mira
                 </p>
                 <p className="text-[10px] text-primary-foreground/70">Online</p>
               </div>
