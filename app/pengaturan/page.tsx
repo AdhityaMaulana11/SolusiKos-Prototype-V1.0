@@ -485,9 +485,9 @@ export default function SettingsPage() {
               <div className="rounded-lg border border-border bg-background p-6">
                 <div className="mb-4 flex items-center gap-2 border-b border-border pb-4">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
-                    SK
+                    Mira
                   </div>
-                  <span className="font-bold text-foreground">SolusiKos</span>
+                  <span className="font-bold text-foreground">Domira</span>
                 </div>
                 <h4 className="text-lg font-semibold text-foreground">
                   Tagihan Baru - Sewa Bulanan
@@ -525,7 +525,7 @@ export default function SettingsPage() {
                   Bayar Sekarang
                 </button>
                 <p className="mt-4 text-center text-xs text-muted-foreground">
-                  Email ini dikirim otomatis oleh SolusiKos. Jangan balas email
+                  Email ini dikirim otomatis oleh Domira. Jangan balas email
                   ini.
                 </p>
               </div>

@@ -10,7 +10,7 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SolusiKos — Cari Kos Impianmu di Rebana Metropolitan",
+  title: "Domira — Temukan Hunian Impianmu di Rebana Metropolitan",
   description:
     "Platform pencarian dan pengelolaan kos terpercaya di kawasan Rebana Metropolitan (Kota Cirebon, Kab. Cirebon, Kuningan, Majalengka, Indramayu). Temukan kos ideal dengan mudah.",
 };

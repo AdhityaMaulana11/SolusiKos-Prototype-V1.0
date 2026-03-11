@@ -179,8 +179,8 @@ export const users: User[] = [
   },
   {
     id: "a1",
-    name: "Admin SolusiKos",
-    email: "admin@solusikos.com",
+    name: "Admin Domira",
+    email: "admin@domira.com",
     phone: "081234567899",
     role: "admin",
     avatar: "AD",

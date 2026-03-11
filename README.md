@@ -1,8 +1,8 @@
-# SolusiKos Prototype
+# Domira Prototype
 
 ## 🚧 Project Status: Interactive SaaS Prototype (Frontend-Only) 🚧
 
-**SolusiKos** is a high-fidelity web prototype of a boarding house (kos) marketplace platform inspired by Mamikos.
+**Domira** is a high-fidelity web prototype of a boarding house (kos) marketplace platform inspired by Mamikos.
 
 This prototype is built specifically for **P2MW competition purposes** and demonstrates a production-grade SaaS experience using fully simulated (dummy) data.
 
@@ -14,7 +14,7 @@ No backend, no real authentication, no real payment processing.
 
 # 🌆 Service Coverage
 
-SolusiKos currently serves the **Rebana Metropolitan** area:
+Domira currently serves the **Rebana Metropolitan** area:
 
 - Kota Cirebon
 - Kabupaten Cirebon
@@ -128,7 +128,7 @@ Each transaction clearly displays:
 - Platform admin fee
 - Final total
 
-This demonstrates SolusiKos' revenue model.
+This demonstrates Domira' revenue model.
 
 ---
 
@@ -216,7 +216,7 @@ http://localhost:3000
 
 # 🎯 Vision
 
-SolusiKos aims to:
+Domira aims to:
 
 - Digitize kos management in regional Indonesia
 - Simplify rental discovery
