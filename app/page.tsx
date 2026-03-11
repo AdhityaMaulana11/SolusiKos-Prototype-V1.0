@@ -102,7 +102,7 @@ export default function HomePage() {
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground">
               <span className="font-medium mr-1">Sering dicari:</span>
               {[
-                "WiFi Ngebut",
+                "WiFi",
                 "AC",
                 "Kos Putri",
                 "Dekat Kampus",
