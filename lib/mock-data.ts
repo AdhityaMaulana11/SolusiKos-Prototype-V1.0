@@ -299,7 +299,7 @@ export const properties: Property[] = [
         },
       ],
       videoTour: {
-        url: "/videos/kos1/tour.mp4",
+        url: "/videos/kos3/tour.mp4",
         thumbnail: "/images/kos2/tampakDepan.jpeg",
         duration: "2:15",
       },
@@ -378,7 +378,7 @@ export const properties: Property[] = [
         },
       ],
       videoTour: {
-        url: "/videos/kos1/tour.mp4",
+        url: "/videos/kos2/tour.mp4",
         thumbnail: "/images/kos3/tampak-depan.jpeg",
         duration: "2:00",
       },
@@ -447,7 +447,7 @@ export const properties: Property[] = [
         },
       ],
       videoTour: {
-        url: "/videos/kos1/tour.mp4",
+        url: "/videos/kos4/tour.mp4",
         thumbnail: "/images/kos4/tampak-depan.jpeg",
         duration: "2:20",
       },
