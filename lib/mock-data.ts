@@ -407,11 +407,11 @@ export const properties: Property[] = [
   },
   {
     id: "prop4",
-    name: "Kos Cirebon Sejahtera",
-    region: "kota-cirebon",
-    address: "Jl. Kartini No. 56, Kota Cirebon",
+    name: "Kos Pondok Purnama",
+    region: "kuningan",
+    address: "Jl. Kartini No. 56, Kota Kuningan",
     description:
-      "Kos strategis di pusat Kota Cirebon, dekat stasiun kereta dan alun-alun. Cocok untuk mahasiswa dan pekerja.",
+      "Kos strategis di pusat Kota Kuningan, dekat stasiun kereta dan alun-alun. Cocok untuk mahasiswa dan pekerja.",
     images: ["/images/kos4/tampak-depan.jpeg"],
     media: {
       photos: [
