@@ -56,7 +56,7 @@ export default function AdminPanel() {
     (sum, p) => sum + p.amount,
     0,
   );
-  const totalAdminFees = paidPayments.reduce((sum, p) => sum + p.adminFee, 0);
+  // const totalAdminFees = paidPayments.reduce((sum, p) => sum + p.adminFee, 0);
   const pendingPayments = allPayments.filter(
     (p) => p.status === "belum_bayar" || p.status === "menunggu",
   );
@@ -187,7 +187,7 @@ export default function AdminPanel() {
                   },
                   {
                     label: "Pendapatan Fee",
-                    value: formatRupiah(totalAdminFees),
+                    // value: formatRupiah(totalAdminFees),
                     icon: DollarSign,
                     color: "text-amber-500",
                     small: true,

@@ -106,7 +106,7 @@ export default function BookingPage({
 
   const basePrice = getBasePrice();
   const subtotal = basePrice * duration;
-  const grandTotal = subtotal + adminFee;
+  const grandTotal = subtotal;
 
   const checkOutDate = (() => {
     const d = new Date(moveInDate);
@@ -149,7 +149,6 @@ export default function BookingPage({
           checkOut: checkOutDate,
           status: "menunggu",
           monthlyRent: property.pricePerMonth,
-          adminFee,
           totalPaid: grandTotal,
           rentalPeriod: rentalType,
           duration,
@@ -165,7 +164,6 @@ export default function BookingPage({
           tenantId: state.currentUser.id,
           ownerId: property.ownerId,
           amount: grandTotal,
-          adminFee,
           netAmount: subtotal,
           status: "lunas",
           method,
