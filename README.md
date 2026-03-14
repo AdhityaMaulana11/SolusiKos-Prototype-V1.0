@@ -198,8 +198,8 @@ This prototype:
 ## Installation
 
 ```bash
-git clone https://github.com/your_username/solusikos-proto1.git
-cd solusikos-proto1
+git clone https://github.com/AdhityaMaulana11/Domira-Prototype-V1.0.git
+cd domira-prototype-v1-0
 npm install
 ```
 
